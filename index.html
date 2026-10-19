@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aplikasi Parcel bonus Soal v1.2.2</title>
+<style>
+:root{--bg:#f4f6f5;--card:#fff;--ink:#16221d;--mut:#62706a;--ac:#0f6b4f;--acl:#dcefe8;--bad:#b3261e;--ln:#d5ddd9;--onac:#fff;--onbad:#fff}
+@media(prefers-color-scheme:dark){:root{--bg:#101714;--card:#18221d;--ink:#e8f0ec;--mut:#9aaba3;--ac:#4cc79d;--acl:#1f3a30;--bad:#ff8a80;--ln:#2c3a33;--onac:#06271c;--onbad:#3a0a06}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,sans-serif;padding:env(safe-area-inset-top) 0 80px}
+main{max-width:560px;margin:auto;padding:12px}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;overflow-x:auto;scrollbar-width:none;background:var(--card);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1 0 auto;border:0;background:none;color:var(--mut);padding:14px 12px;font:inherit;font-size:13px}
+nav button.on{color:var(--ac);font-weight:700;box-shadow:inset 0 3px var(--ac)}
+h2{font-size:18px;margin:16px 0 8px}
+.c{background:var(--card);border:1px solid var(--ln);border-radius:10px;padding:12px;margin-bottom:10px}
+.g{display:flex;flex-wrap:wrap;gap:8px}
+.b{border:1px solid var(--ln);background:var(--card);color:var(--ink);border-radius:10px;padding:12px 14px;font:inherit;min-height:46px}
+.b.on{background:var(--ac);color:var(--onac);border-color:var(--ac)}
+.b.pri{background:var(--ac);color:var(--onac);border-color:var(--ac);font-weight:700;width:100%}
+.b.bad{color:var(--bad);border-color:var(--bad)}
+.row{display:flex;justify-content:space-between;gap:8px;padding:4px 0}
+details>summary{font-weight:700;font-size:17px;margin:14px 0 6px;cursor:pointer}.m{color:var(--mut);font-size:14px}.warn{background:var(--bad);color:var(--onbad);padding:10px;border-radius:10px;margin-bottom:10px;font-weight:600}
+.ok{background:var(--acl);padding:10px;border-radius:10px;margin-bottom:10px}
+input.up{text-transform:uppercase}input{width:100%;font:inherit;padding:12px;border:1px solid var(--ln);border-radius:10px;background:var(--bg);color:var(--ink);margin:4px 0 10px}
+.ov{position:fixed;inset:0;background:#000a;display:flex;align-items:flex-end;justify-content:center;z-index:9}
+.ov>div{background:var(--card);width:100%;max-width:560px;max-height:92%;overflow:auto;border-radius:14px 14px 0 0;padding:16px}
+.nota{background:#fff;color:#111;border:1px solid #999;padding:14px;font-size:15px}
+.nota .row{border-bottom:1px dotted #bbb}.stamp{text-align:center;font-weight:800;font-size:20px;color:#b3261e;border:2px solid #b3261e;padding:4px;margin:6px 0}
+#bonus{--surface:var(--card);--text:var(--ink);--muted:var(--mut);--border:var(--ln);--accent:var(--ac);--code-bg:var(--bg);--code-text:var(--ink);line-height:1.6}
+#bonus h2{font-size:20px;font-weight:500;margin:0 0 6px}#bonus h2.kategori{font-size:17px;margin:28px 0 10px;padding-bottom:6px;border-bottom:.5px solid var(--border)}
+#bonus .intro{color:var(--muted);font-size:15px;margin:0 0 16px}#bonus .jumlah{font-size:13px;color:var(--muted);margin:8px 0}
+#bonus .bn-row{background:var(--surface);border:.5px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
+#bonus .atas{display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:center}#bonus .demo{display:flex;flex-direction:column;gap:8px;min-width:0}
+#bonus .nama{font-weight:500;color:var(--accent);margin:0;font-family:ui-monospace,Menlo,Consolas,monospace}#bonus .nama::after{content:" :";color:var(--muted)}
+#bonus .penjelasan{margin:0;font-size:15px}#bonus .label{font-size:13px;color:var(--muted);margin:10px 0 4px}
+#bonus pre{background:var(--code-bg);color:var(--code-text);border-radius:8px;padding:10px 12px;margin:0;font-size:13px;overflow-x:auto;white-space:pre-wrap}
+#bonus .kotak{border:1px dashed var(--border);border-radius:8px;padding:10px;font-size:14px;color:var(--muted)}
+#bonus input,#bonus select,#bonus textarea{font:inherit;font-size:15px;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;width:100%;max-width:100%;margin:0}
+#bonus input[type=checkbox],#bonus input[type=radio]{width:18px;height:18px;padding:0;accent-color:var(--accent)}
+#bonus label.opsi{display:flex;align-items:center;gap:8px;font-size:15px}
+#bonus button{font:inherit;font-size:15px;background:var(--accent);color:var(--onac);border:none;border-radius:8px;padding:8px 16px;cursor:pointer;align-self:flex-start}
+#bonus button.kedua{background:transparent;color:var(--accent);border:1px solid var(--border)}
+#bonus a{color:var(--accent)}#bonus nav{position:static;display:block;background:none;border:0;overflow:visible}#bonus main{max-width:none;margin:0;padding:0}
+#bonus details{border:1px solid var(--border);border-radius:8px;padding:8px 12px}#bonus summary{cursor:pointer;font-size:15px;font-weight:400;margin:0}
+#bonus dialog{background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:12px;max-width:300px}
+#bonus table{border-collapse:collapse;width:100%;font-size:14px}#bonus th,#bonus td{border:1px solid var(--border);padding:5px 8px;text-align:left}
+#bonus .top-tabs{background:var(--surface);border:.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:14px}
+#bonus .tab-bar{display:flex;border-bottom:.5px solid var(--border)}
+#bonus .tab-btn{flex:1;background:none;color:var(--muted);border:none;border-bottom:3px solid transparent;padding:14px 8px}
+#bonus .tab-btn.aktif{color:#3DBE8B;font-weight:500;border-bottom-color:#3DBE8B}
+#bonus .tab-panel{padding:16px 18px;display:none;font-size:15px}#bonus .tab-panel.aktif{display:block}
+#bonus .tab-panel h3{margin:0 0 6px;font-size:16px;font-weight:500}#bonus .tab-panel p{margin:0 0 8px;color:var(--muted)}
+#bonus input[type=submit],#bonus input[type=reset],#bonus input[type=button]{width:auto;background:var(--accent);color:var(--onac);border:none;padding:8px 16px;cursor:pointer}#bonus input[type=reset]{background:transparent;color:var(--accent);border:1px solid var(--border)}
+#soal h2{font-size:20px;font-weight:500;margin:0 0 12px}
+#soal .q{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:16px;margin-bottom:12px}
+#soal .qn{font-weight:700;color:var(--ac);margin-bottom:4px}#soal .qt{margin:0 0 10px}
+#soal textarea{width:100%;min-height:110px;font:14px/1.5 ui-monospace,Menlo,Consolas,monospace;color:var(--ink);background:var(--bg);border:2px solid var(--ln);border-radius:8px;padding:10px;margin:0 0 10px;resize:vertical}
+#soal textarea.benar{border-color:var(--ac)}#soal textarea.salah{border-color:var(--bad)}
+#soal button{font:inherit;background:var(--ac);color:var(--onac);border:0;border-radius:8px;padding:10px 18px}
+#soal .hasil{display:none;margin-top:12px;padding:10px 12px;border-radius:8px;font-weight:700;align-items:center;gap:10px}
+#soal .hasil i{font-style:normal;font-size:22px;line-height:1}
+#soal .hasil.benar{display:flex;color:var(--ac);background:var(--acl);border:1px solid var(--ac)}
+#soal .hasil.salah{display:flex;color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,transparent);border:1px solid var(--bad)}
+#soal .hasil.info{display:flex;color:var(--mut);border:1px dashed var(--ln)}
+#soal .btns,#soal .nv{display:flex;gap:8px;flex-wrap:wrap}#soal .nv{justify-content:space-between}#soal .nv input{flex:1;min-width:0;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:10px;margin:0}
+#soal button.kedua{background:transparent;color:var(--ac);border:1px solid var(--ln)}#soal button:disabled{opacity:.4}
+#soal .kb{margin-top:12px}#soal .kb pre.kunci{margin:4px 0 0}#soal pre.kunci{margin:12px 0 0;padding:10px 12px;background:var(--bg);color:var(--ink);border-radius:8px;font-size:13px;overflow-x:auto;white-space:pre-wrap}
+#hasil h2{font-size:20px;font-weight:500;margin:0 0 6px}#hasil iframe{display:block;width:100%;height:60vh;min-height:320px;border:1px solid var(--ln);border-radius:10px;background:#fff}
+#hasil #hs-tab{background:var(--card);border:1px solid var(--ln);border-radius:10px 10px 0 0;padding:8px 12px;font-size:14px;margin-bottom:-1px}
+@media(max-width:620px){#bonus .atas{grid-template-columns:1fr}}
+@media print{nav,.noprint,main>*:not(.ov){display:none!important}.ov{position:static;background:none}.ov>div{max-height:none;padding:0}}
+</style></head><body><main id="app"></main>
+<nav id="nav"></nav>
+<script>
+const kosong=()=>({supplier:[],belanja:[],toko:{nama:"",hp:""},barang:[],parcel:[],pembeli:[],orders:[],notas:[],seq:1,dirty:0,last:null});
+let db=kosong(),revLokal=0;
+try{let s=localStorage.getItem("kasirParcel");if(s){try{db=Object.assign(kosong(),JSON.parse(s))}catch(e){try{localStorage.setItem("kasirParcel_rusak",s)}catch(x){}setTimeout(()=>alert("Data tersimpan rusak. Salinannya disimpan terpisah dan aplikasi mulai dari kosong. Pulihkan dari file cadangan kalau ada."),300)}}}catch(e){}
+revLokal=db.rev||0;
+sanit(db);
+function okImg(t){return typeof t=="string"&&/^data:image\/(png|jpe?g|webp);base64,[A-Za-z0-9+\/=]+$/.test(t)}
+function sanit(d){if(d&&d.toko&&d.toko.logo&&!okImg(d.toko.logo))delete d.toko.logo;((d&&d.parcel)||[]).forEach(p=>{if(p&&p.foto&&!okImg(p.foto))delete p.foto});return d}
+const dev=()=>{try{return localStorage.getItem("kasirParcel_perangkat")||"utama"}catch(e){return"utama"}};
+const roHP=()=>dev()=="cadangan";
+function lg(k){db.log=db.log||[];db.log.push({t:iso(0)+" "+new Date().toTimeString().slice(0,5),o:role||"-",k});if(db.log.length>1000)db.log=db.log.slice(-1000)}
+const validBayar=t=>validTgl(t)&&t<=iso(0);
+const bl=x=>!isNaN(x)&&x>=0&&x==Math.floor(x);
+const nID=x=>{let t=String(x==null?"":x).replace(/rp/ig,"").replace(/\s/g,"");if(t==="")return NaN;if(/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(t))t=t.replace(/\./g,"").replace(",",".");else if(/^\d+,\d+$/.test(t))t=t.replace(",",".");else if(/^\d{1,3}(,\d{3})+$/.test(t))t=t.replace(/,/g,"");if(!/^\d+(\.\d+)?$/.test(t))return NaN;return parseFloat(t)};
+const plab=p=>p.jenis=="dp"?"DP":p.jenis=="refund"?"Refund":"Lunas";
+const kodeGen=()=>{let A="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",u=new Uint8Array(12);try{crypto.getRandomValues(u)}catch(e){u=u.map(()=>Math.floor(Math.random()*256))}return [...u].map(x=>A[x%32]).join("").replace(/(.{4})(?=.)/g,"$1-")};
+const nk=x=>String(x).toUpperCase().replace(/[^A-Z0-9]/g,"");
+const askPw=(j,l)=>new Promise(res=>{openForm(j,[{l,t:"text",pw:true}],v=>{res(v[0])})});
+const b64=u=>{let t="";for(let i=0;i<u.length;i+=8192)t+=String.fromCharCode.apply(null,u.subarray(i,i+8192));return btoa(t)};
+const ub64=t=>Uint8Array.from(atob(t),c=>c.charCodeAt(0));
+async function kunciPw(pw,salt,use){let km=await crypto.subtle.importKey("raw",new TextEncoder().encode(pw),"PBKDF2",false,["deriveKey"]);return crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:200000,hash:"SHA-256"},km,{name:"AES-GCM",length:256},false,[use])}
+async function enkrip(t,pw){let salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),k=await kunciPw(pw,salt,"encrypt"),ct=new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM",iv},k,new TextEncoder().encode(t)));return JSON.stringify({enc:1,salt:b64(salt),iv:b64(iv),data:b64(ct)})}
+async function dekrip(d,pw){let k=await kunciPw(pw,ub64(d.salt),"decrypt"),pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:ub64(d.iv)},k,ub64(d.data));return new TextDecoder().decode(pt)}
+const save=()=>{
+ try{let cur=JSON.parse(localStorage.getItem("kasirParcel")||"{}");if((cur.rev||0)>revLokal){alert("Data sudah berubah di jendela lain. Muat ulang halaman supaya tidak saling menimpa.");return}}catch(e){}
+ try{revLokal++;db.rev=revLokal;localStorage.setItem("kasirParcel",JSON.stringify(db))}catch(e){alert("Penyimpanan browser gagal. Segera ekspor cadangan.")}};
+const rp=n=>"Rp"+Math.round(n||0).toLocaleString("id-ID");
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+const iso=(d=0)=>{let t=new Date();t.setDate(t.getDate()-d);return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0")};
+const validTgl=t=>{let m=/^(\d{4})-(\d\d)-(\d\d)$/.exec(t);if(!m)return false;let d=new Date(+m[1],m[2]-1,+m[3]);return d.getFullYear()==+m[1]&&d.getMonth()==m[2]-1&&d.getDate()==+m[3]};
+const tgl=s=>{let[y,m,d]=s.split("-");return d+"/"+m+"/"+y};
+const H=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const modal=b=>b.modal!=null?b.modal:(b.beli||0)/(b.isi||1);
+const modalParcel=p=>p.isi.reduce((s,i)=>{let b=db.barang.find(x=>x.id==i.b);return s+(b?modal(b)*i.q:0)},0)+(p.kemasan||0);
+const minDP=t=>Math.min(t,Math.ceil(t*gp("dp",50)/100));
+const paid=o=>o.pays.reduce((s,p)=>s+p.amt,0);
+let tab="trx",tx=null;
+const tabs={trx:"Jual",ord:"Pembeli",nota:"Nota",rkp:"Rekap",mst:"Master",bak:"Cadangan",bns:"Bonus",soal:"Soal",hasil:"Hasil"};
+function go(t){tab=t;draw()}
+let role=null,gagal=lkLoad().g||0,kunci=lkLoad().k||0,lastAct=Date.now(),pinBuf="",pinCb=null,pinMeta=[];
+function lkLoad(){try{return JSON.parse(localStorage.getItem("kasirParcel_kunci")||"{}")}catch(e){return{}}}
+function lkSave(){try{localStorage.setItem("kasirParcel_kunci",JSON.stringify({g:gagal,k:kunci}))}catch(e){}}
+const hsh=p=>{let h1=0xdeadbeef,h2=0x41c6ce57,t="pcl|"+p;for(let i=0,c;i<t.length;i++){c=t.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677)}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return(4294967296*(2097151&h2)+(h1>>>0)).toString(36)};
+const izin=()=>roHP()?(role=="admin"?["nota","rkp","bak"]:["nota"]):(role=="admin"?Object.keys(tabs):["trx","ord","nota","mst"]);
+function draw(){
+ db.supplier=db.supplier||[];db.belanja=db.belanja||[];
+ if(!db.auth||!db.auth.admin)return setupAwal();
+ if(!role)return layarLogin();
+ let ok=izin();if(!ok.includes(tab))tab=ok[0];
+ let wv="";if(db.versi!==VERSI){if(vcmp(db.versi||"0",VERSI)>0)wv=`<div class="warn">Data ini terakhir ditulis oleh versi v${H(db.versi)} yang LEBIH BARU dari file ini (v${VERSI}). Jangan mencatat di sini; pakai file versi terbaru.</div>`;else if(!roHP()){let lama=db.versi||"-";db.versi=VERSI;lg("Aplikasi diperbarui: v"+lama+" -> v"+VERSI);save()}}
+ nav.innerHTML=ok.map(k=>`<button class="${k==tab?"on":""}" onclick="go('${k}')">${tabs[k]}</button>`).join("");
+ {let a=nav.querySelector(".on");if(a)a.scrollIntoView({inline:"nearest",block:"nearest"})}
+ if(tab=="bns"){app.innerHTML=vBns();bonusInit();return}
+ if(tab=="soal"){app.innerHTML=vSoal();soalInit();return}
+ if(tab=="hasil"){app.innerHTML=vHasil();hasilInit();return}
+ let ld=db.last?-hari(db.last.slice(0,10)):null,sb=ld==null?"belum pernah dicadangkan":ld<=0?"terakhir dicadangkan hari ini":"terakhir dicadangkan "+ld+" hari lalu";
+ let w=roHP()?`<div class="ok"><b>HP CADANGAN (baca saja).</b> Transaksi hanya dicatat di HP utama.</div>`:db.dirty?`<div class="warn">${db.dirty} perubahan belum dicadangkan (${sb}). ${role=="admin"?"Buka tab Cadangan.":"Beri tahu admin untuk mencadangkan."}</div>`:(db.orders.length&&ld!==0)?`<div class="ok">Cadangan ${sb}. Sebaiknya cadangkan saat toko tutup.</div>`:"";
+ let h=`<div class="row m"><span>Masuk sebagai <b>${role=="admin"?"Admin":"User"}</b></span><span class="g"><button class="b" style="min-height:34px;padding:4px 12px" onclick="bantuan()">Bantuan</button><button class="b" style="min-height:34px;padding:4px 12px" onclick="kunciSekarang()">Kunci</button></span></div><div class="m" style="margin-bottom:6px"><b>v${VERSI}</b> &middot; ${roHP()?"HP CADANGAN":"HP UTAMA"} &middot; ${H(namaHP())} &middot; giliran #${gil().no||0}${gil().pj?(roHP()?" &middot; diserahkan ke: ":" &middot; penanggung jawab: ")+H(gil().pj):""}</div>`;
+ app.innerHTML=h+wv+w+({trx:vTrx,ord:vOrd,nota:vNota,rkp:vRkp,mst:vMst,bak:vBak}[tab])();if(rfh)rfh();
+}
+/* ---------- login ---------- */
+function pinUI(judul,sub,cb,extra){pinBuf="";pinCb=cb;pinMeta=[judul,sub,extra||""];pinDraw()}
+function pinDraw(){let[j,sb,ex]=pinMeta;nav.innerHTML="";
+ app.innerHTML=`<div style="text-align:center;padding-top:24px"><h2>${j}</h2><div class="m">${sb}</div><div style="font-size:32px;letter-spacing:10px;margin:14px 0;min-height:44px">${"&#9679;".repeat(pinBuf.length)||"&nbsp;"}</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:280px;margin:auto">${[1,2,3,4,5,6,7,8,9].map(n=>`<button class="b" style="font-size:22px" onclick="pinKey(${n})">${n}</button>`).join("")}<button class="b" onclick="pinDel()">Hapus</button><button class="b" style="font-size:22px" onclick="pinKey(0)">0</button><button class="b pri" onclick="pinOk()">OK</button></div>${ex}</div>`}
+function pinKey(n){if(pinBuf.length<6){pinBuf+=n;pinDraw()}}
+function pinDel(){pinBuf=pinBuf.slice(0,-1);pinDraw()}
+function pinOk(){if(pinBuf.length<4)return alert("PIN minimal 4 angka");let p=pinBuf;pinBuf="";pinCb(p)}
+function setupAwal(){let first;
+ const ex=`<br><div class="m">Sudah punya file cadangan?</div><input type="file" accept=".json" onchange="pulih(this)">`;
+ pinUI("Buat PIN admin","4 sampai 6 angka. Catat PIN ini, tidak bisa dipulihkan.",p=>{first=p;pinUI("Ulangi PIN admin","",q=>{if(q!=first){alert("PIN tidak sama. Ulangi.");setupAwal();return}let kd=kodeGen();db.auth={admin:hsh(q),user:null,rec:hsh(nk(kd))};db.dirty++;save();role="admin";lastAct=Date.now();tab="trx";draw();alert("KODE PEMULIHAN PIN ADMIN:\n\n"+kd+"\n\nCatat di kertas dan simpan di tempat aman. Kalau PIN admin lupa, kode ini satu-satunya cara memulihkannya. Kode hanya tampil sekali.")})},ex);
+}
+function layarLogin(){nav.innerHTML="";app.innerHTML=`<div style="text-align:center;padding-top:40px"><h2>${H(db.toko.nama)||"Parcel Indogrosir"}</h2><div class="m">Parcel Indogrosir v${VERSI}</div><div class="m">Masuk sebagai</div><br><button class="b pri" onclick="pilihRole('admin')">Admin</button><br><br><button class="b" style="width:100%" onclick="pilihRole('user')">User</button><br><br><button class="b" onclick="lupaPin()">Lupa PIN admin?</button></div>`}
+function pilihRole(r){
+ if(r=="user"&&!db.auth.user)return alert("PIN user belum dibuat. Masuk sebagai admin untuk membuatnya.");
+ if(Date.now()<kunci)return alert("Terlalu banyak salah. Tunggu "+Math.ceil((kunci-Date.now())/1000)+" detik.");
+ pinUI("PIN "+(r=="admin"?"Admin":"User"),"",p=>{
+  if(hsh(p)==db.auth[r]){gagal=0;lkSave();role=r;lastAct=Date.now();tab="trx";tx=null;draw()}
+  else{gagal++;if(gagal>=5){gagal=0;kunci=Date.now()+30000;alert("PIN salah 5 kali. Coba lagi 30 detik lagi.")}else alert("PIN salah.");lkSave();layarLogin()}
+ },`<br><button class="b" onclick="layarLogin()">Kembali</button>`);
+}
+function buatKode(){if(!confirm("Buat kode pemulihan baru? Kode lama tidak berlaku lagi."))return;let k=kodeGen();db.auth.rec=hsh(nk(k));lg("Buat kode pemulihan PIN");chg();alert("KODE PEMULIHAN PIN ADMIN:\n\n"+k+"\n\nCatat di kertas dan simpan di tempat aman. Kode hanya tampil sekali.")}
+function lupaPin(){if(!db.auth.rec)return alert("Kode pemulihan belum pernah dibuat di HP ini. Pulihkan data dari file cadangan di HP lain atau hubungi pembuat aplikasi.");
+ if(Date.now()<kunci)return alert("Terlalu banyak salah. Tunggu "+Math.ceil((kunci-Date.now())/1000)+" detik.");
+ openForm("Kode pemulihan PIN",[{l:"Masukkan kode pemulihan (12 huruf/angka)",t:"text",up:true}],v=>{
+  if(hsh(nk(v[0]))!=db.auth.rec){gagal++;if(gagal>=5){gagal=0;kunci=Date.now()+30000}lkSave();alert("Kode salah.");return false}
+  gagal=0;lkSave();setTimeout(()=>{let first;pinUI("PIN admin baru","4 sampai 6 angka",p=>{first=p;pinUI("Ulangi PIN admin baru","",q=>{
+   if(q!=first){alert("PIN tidak sama.");return layarLogin()}
+   if(db.auth.user&&hsh(q)==db.auth.user){alert("PIN admin dan user tidak boleh sama.");return layarLogin()}
+   db.auth.admin=hsh(q);lg("PIN admin direset dengan kode pemulihan");db.dirty++;save();layarLogin();alert("PIN admin diganti. Silakan masuk.")})})},0)})}
+function ubahPJ(){if(roHP())return alert("HP cadangan tidak punya penanggung jawab. Jadikan HP ini utama dulu.");openForm("Penanggung jawab",[{l:"Nama penanggung jawab HP utama saat ini",t:"text",v:gil().pj||"",up:true}],v=>{if(!v[0])return false;gil().pj=v[0];lg("Penanggung jawab: "+v[0]);chg()})}
+function setDev(v){let msg=v=="cadangan"?"Jadikan HP ini HP CADANGAN (baca saja)? Transaksi tidak bisa dicatat di sini.":(gil().diserahkan?"PERINGATAN: HP ini baru menyerahkan peran utama (giliran #"+gil().no+" ke "+(gil().pj||"-")+"). Kalau file serah terima sudah dipulihkan di HP lain, HP itu sudah menjadi UTAMA, dan menjadikan HP ini utama lagi membuat DUA HP UTAMA (nomor nota bisa kembar). Lanjutkan hanya kalau serah terima DIBATALKAN atau file belum dipakai. Lanjutkan?":"Jadikan HP ini HP UTAMA? Pastikan HP lain sudah diatur sebagai cadangan agar nomor nota tidak bentrok.");
+ if(!confirm(msg))return;try{localStorage.setItem("kasirParcel_perangkat",v)}catch(e){}
+ lg("Peran HP: "+v);if(v=="utama"&&gil().diserahkan){gil().diserahkan=0;gil().pj=""}save();draw();if(v=="utama")setTimeout(ubahPJ,0)}
+function logHtml(){let L=(db.log||[]).slice(-30).reverse();return `<div class="c"><b>Log aktivitas (30 terakhir)</b>${L.map(x=>`<div class="row m"><span>${H(x.t)} ${H(x.o)}</span><span style="text-align:right">${H(x.k)}</span></div>`).join("")||'<div class="m">Belum ada catatan.</div>'}</div>`}
+function idHP(){try{let k="kasirParcel_idhp",v=localStorage.getItem(k);if(!v){v=uid();localStorage.setItem(k,v)}return v}catch(e){return"hp"}}
+function namaHP(){try{return localStorage.getItem("kasirParcel_namahp")||"HP INI"}catch(e){return"HP INI"}}
+function gil(){db.giliran=db.giliran||{no:0,pj:"",nama:"",waktu:"",id:"",serah:0};return db.giliran}
+function eNamaHP(){openForm("Nama HP ini",[{l:"Nama HP (misalnya HP SUAMI)",t:"text",v:namaHP()==="HP INI"?"":namaHP(),up:true}],v=>{if(!v[0])return false;try{localStorage.setItem("kasirParcel_namahp",v[0])}catch(e){}lg("Nama HP: "+v[0]);draw()})}
+const askTxt=(j,l)=>new Promise(res=>{openForm(j,[{l,t:"text",up:true}],v=>{if(!v[0])return false;res(v[0])})});
+const VERSI="1.2.3",TGL_VERSI="2026-10-18";
+const vcmp=(a,b)=>{let x=String(a).split(".").map(Number),y=String(b).split(".").map(Number);for(let i=0;i<3;i++){let d=(x[i]||0)-(y[i]||0);if(d)return d}return 0};
+const RIWAYAT=[{"v": "1.2.3", "d": "2026-10-18", "j": "Tab Hasil dan kalimat soal", "f": ["Tab Hasil di sebelah kanan Soal, khusus admin: jawaban ditampilkan sebagai halaman web nyata", "Kalimat soal disesuaikan: mengarahkan ke tab Hasil, dan memberi tahu kalau elemennya tidak terlihat langsung", "Tombol Lihat hasil di tab Soal dan Kembali ke soal di tab Hasil"]},{"v": "1.2.2", "d": "2026-10-18", "j": "Tab Bonus dan Soal", "f": ["Tab Bonus di sebelah kanan Cadangan, khusus admin, berisi Referensi Lengkap Elemen HTML yang bisa dicari", "Tab Soal di sebelah kanan Bonus, khusus admin: soal isian dengan tanda centang hijau kalau benar dan tanda silang merah kalau salah"]},{"v": "1.2.1", "d": "2026-10-18", "j": "Perbaikan penanggung jawab dan pengaman dua HP utama", "f": ["Perbaikan: penanggung jawab lama tidak lagi tertinggal setelah serah terima dibatalkan dan HP dijadikan utama lagi", "Tombol Ubah penanggung jawab di tab Cadangan; aplikasi menanyakan penanggung jawab saat HP dijadikan utama lagi", "Peringatan keras sebelum menjadikan HP utama lagi setelah menyerahkan peran (mencegah dua HP utama dan nomor nota kembar)", "Banner HP cadangan menampilkan \"diserahkan ke\", banner HP utama menampilkan \"penanggung jawab\"", "Peringatan kalau file dibuka lewat content:// atau file:// karena penyimpanan data bisa tidak stabil", "Bantuan: bagian baru Cara membuka file di HP dan catatan tentang penanggung jawab"]},{"v": "1.2", "d": "2026-10-17", "j": "Serah terima HP utama, Bantuan, dan Riwayat versi", "f": ["Serah terima peran utama: HP lama otomatis menjadi HP cadangan (baca saja) saat file dibuat", "Penanda giliran dan penanggung jawab di file serah terima; file yang lebih tua ditolak", "Peringatan sebelum memulihkan: menyebut nomor nota yang akan hilang dan membandingkan nota terakhir", "Nama HP, banner HP UTAMA atau HP CADANGAN, pengingat cadangan harian, dan aturan kerja serah terima", "Tombol Bantuan / Cara pakai (di bagian atas layar dan tab Cadangan) yang mencakup semua tab", "Riwayat versi di tab Cadangan; nomor versi tampil di judul, header, dan nama file cadangan", "Peringatan kalau data berasal dari versi yang lebih baru; pembaruan versi tercatat di Log aktivitas", "Daftar uji coba dua HP di dalam Bantuan"]}, {"v": "1.1", "d": "2026-10-17", "j": "Perbaikan bug, keamanan, dan pengaman human error", "f": ["Bug: nota yang sudah terbit tidak berubah lagi saat catatan pesanan diubah", "Bug: batal nota hanya mengembalikan stok untuk parcel yang belum dibuat, dan tercatat di riwayat stok", "Bug: parcel tanpa isi atau berharga Rp0 ditolak saat disimpan dan saat dijual; nama parcel ganda ditolak", "Bug: impor CSV membaca angka format Indonesia (7.000 menjadi 7000)", "Bug: ongkir manual tidak menempel setelah keranjang atau pengiriman berubah", "Bug: nama barang ganda ditolak; modal Rp0 dan angka tidak wajar meminta konfirmasi", "Bug: logo dan foto divalidasi (cegah penyuntikan HTML dari file cadangan)", "Bug: cetak 58 dan 80 mm memakai tinggi halaman eksplisit", "Human error: kolom angka bulat menolak desimal; isi parcel bisa dikurangi satu per satu; tanggal bayar masa depan ditolak; peringatan harga di bawah modal; pelunasan ganda dicegah", "Fitur: HP cadangan baca-saja, pengingat cadangan berbasis waktu, Refund, Log aktivitas", "Fitur: cadangan berpassword (enkripsi AES) dan kode pemulihan PIN admin"]}, {"v": "1.0", "d": null, "j": "Basis: file parcel__21_.html yang Anda unggah", "f": ["Stok opname, pencatatan Rusak atau kedaluwarsa, dan Riwayat stok", "Stok dipesan versus stok di rak; pelacakan Dibuat n dari m, Tandai semua sudah dibuat, dan Sudah diambil", "Kemasan per komponen, foto parcel, dan logo toko", "Ongkos kirim standar dan gratis ongkir mulai jumlah parcel tertentu", "Tanggal ambil atau kirim, jatuh tempo, daftar siapkan barang, tagih dan bagikan nota lewat WhatsApp", "Impor dan ekspor CSV untuk barang dan pembeli; ekspor CSV nota dan rekap", "Rekap lengkap: periode (hari, 7 hari, bulan, rentang), kas, jadwal pengambilan, perlu dibeli, perlu dibuat, margin", "Pengaturan: DP minimal, margin target, jatuh tempo, awalan nomor nota, ukuran cetak (a4, 58, 80)"]}, {"v": "0.6", "d": null, "j": "Versi awal: Supplier dan modal rata-rata", "f": ["Supplier, harga beli per pcs dan per karton, modal rata-rata tertimbang saat Tambah stok, riwayat belanja", "Ubah dan Hapus untuk barang, parcel, pembeli, supplier (tidak boleh dihapus kalau sudah dipakai)"]}, {"v": "0.5", "d": null, "j": "Versi awal: Keamanan dan kemudahan input", "f": ["Login PIN admin dan user, kunci otomatis, pembatasan menu dan harga deal untuk user", "Nama pembeli otomatis huruf besar dengan peringatan nama ganda; tambah pembeli langsung di layar Jual; ketuk pilih dan ketuk lagi untuk batal"]}, {"v": "0.4", "d": null, "j": "Versi awal: Stok dan rekap", "f": ["Stok per barang, penjualan ditolak kalau stok kurang, peringatan per parcel dengan batas per barang", "Rekap penjualan dan keuntungan, daftar belum lunas, data contoh, DP minimal 50 persen"]}, {"v": "0.3", "d": null, "j": "Versi awal: Nota", "f": ["Nomor nota berurutan, reprint, pembatalan dengan alasan, nota pengganti", "Nota DP tetap utuh; nota pelunasan memuat DP dan pelunasan beserta tanggalnya"]}, {"v": "0.2", "d": null, "j": "Versi awal: Pembayaran dan cadangan", "f": ["Pembayaran DP dan Lunas dengan tanggal, tombol kirim cadangan, peringatan belum dicadangkan"]}, {"v": "0.1", "d": null, "j": "Versi awal: Dasar", "f": ["Master barang, parcel, pembeli; transaksi lewat ketukan; format Rupiah bertitik; modal dan keuntungan per parcel"]}];
+const BANTUAN=[{"t": "Mulai cepat", "h": "<ol><li>Buka file di Chrome. Buat <b>PIN admin</b> (4 sampai 6 angka) dan <b>catat kode pemulihan</b> yang muncul satu kali.</li><li>Tab <b>Master</b>: isi Toko, Supplier, Barang (dengan harga beli), lalu Parcel (isi, harga jual, kemasan).</li><li>Tab <b>Jual</b>: pilih pembeli, parcel, cara bayar, tanggal, lalu Simpan. Nota terbit otomatis.</li><li>Pelunasan: tab <b>Pembeli</b>, ketuk <b>Lunasi sisa</b>.</li><li>Setiap akhir hari: tab <b>Cadangan</b>, ketuk <b>Kirim cadangan</b>.</li></ol><p>Untuk latihan, pakai tombol <b>Muat data master contoh</b> di tab Cadangan. Sebelum dipakai sungguhan, ketuk <b>Hapus semua data</b> supaya nomor nota mulai dari awal.</p>"}, {"t": "Tab Jual (mencatat penjualan)", "h": "<ol><li><b>Pembeli</b>: ketuk nama untuk memilih, ketuk lagi untuk membatalkan. <b>+ Pembeli baru</b> menambah nama langsung (otomatis huruf besar; nama yang sama atau mirip diperingatkan).</li><li><b>Parcel</b>: ketuk untuk memilih, ketuk lagi untuk batal. Tombol <b>-</b> dan <b>+</b> mengubah jumlah. Tulisan \"stok N paket\" adalah berapa paket yang masih bisa dibuat. <b>Harga deal</b> hanya untuk admin.</li><li><b>Bayar</b>: Tunai atau Transfer, lalu DP atau Lunas. DP minimal mengikuti Pengaturan (bawaan 50 persen dari total). Pakai tombol nominal atau <b>Nominal lain</b>. DP yang sama dengan total otomatis tercatat Lunas.</li><li><b>Tanggal bayar</b>: Hari ini, Kemarin, 2 hari lalu, atau Tanggal lain. Tanggal di masa depan ditolak.</li><li><b>Pengambilan dan catatan</b> (opsional): tanggal ambil atau kirim dan catatan.</li><li><b>Pengiriman</b>: Ambil sendiri atau Dikirim. Ongkir otomatis dari Pengaturan dan bisa diubah lewat <b>Ubah ongkir</b>.</li></ol><p>Lalu ketuk <b>Simpan dan terbitkan nota</b>. Penjualan ditolak kalau stok tidak cukup, parcel tanpa isi atau berharga Rp0, atau DP di bawah minimal.</p>"}, {"t": "Tab Pembeli (pesanan)", "h": "<ul><li>Atur tampilan: <b>Per transaksi</b> atau <b>Per pembeli</b>; saring Belum lunas, Lunas, Belum diambil, Belum selesai dibuat, Sedang dibuat, Siap diambil; urutkan Terbaru, Sisa terbesar, atau Ambil terdekat.</li><li><b>Dibuat n/m</b> dengan tombol - dan +: catat berapa parcel yang sudah dikemas. <b>Tandai semua sudah dibuat</b> untuk sekaligus.</li><li><b>Lunasi sisa</b>: pilih metode dan tanggal, lalu terbit nota pelunasan. <b>Tagih WhatsApp</b> membuat pesan penagihan.</li><li><b>Daftar siapkan barang</b>: rincian barang yang harus diambil dari rak, bisa dikirim lewat WhatsApp.</li><li><b>Sudah diambil</b>: menandai pesanan selesai dan barangnya dianggap terpakai (ada konfirmasi).</li><li><b>Ubah catatan</b>: mengubah tanggal ambil dan catatan pesanan. Nota yang sudah terbit tidak ikut berubah.</li><li><b>Refund</b> (admin): isi nominal (maksimal sebesar yang sudah dibayar), pilih metode dan alasan. Total pesanan turun dan nota baru terbit. Stok tidak berubah; kalau barang kembali ke rak, catat lewat Opname.</li><li>Keuntungan per pesanan hanya terlihat oleh admin.</li></ul>"}, {"t": "Tab Nota", "h": "<ul><li>Daftar semua nota; saring Semua, Belum lunas, Lunas, Batal. <b>Ekspor CSV</b> untuk disimpan.</li><li><b>Buka</b> nota: <b>Cetak / simpan PDF</b>, <b>Bagikan WhatsApp</b>, atau <b>Reprint</b> (cetak ulang bertanda REPRINT, isi tidak berubah).</li><li><b>Batalkan</b> (admin): pilih alasan. Hanya nota terbaru dari satu pesanan yang bisa dibatalkan. Stok hanya kembali untuk parcel yang belum dibuat. Nota pengganti berikutnya otomatis mencantumkan \"Pengganti INV-xxxx\".</li><li>Nota tidak pernah diedit. Kalau salah, batalkan lalu buat transaksi baru.</li><li>Awalan nomor nota dan ukuran cetak (a4, 58, 80 mm) diatur di Master, Pengaturan.</li></ul>"}, {"t": "Tab Rekap (admin)", "h": "<ul><li>Periode: Hari ini, 7 hari, Bulan ini, Semua, Pilih bulan, atau Rentang tanggal.</li><li><b>Ringkasan</b>: jumlah transaksi, penjualan, modal, keuntungan, margin, uang diterima, sisa belum dibayar.</li><li><b>Keuangan kas</b>: uang diterima, belanja barang, selisih kas.</li><li><b>Jadwal pengambilan</b>, <b>Perlu dibeli</b> (stok di bawah batas), <b>Perlu dibuat</b> (parcel belum dikemas dan barang yang diambil dari rak).</li><li><b>Ekspor CSV</b> dan <b>Cetak ringkasan</b>.</li></ul><p>Catatan: keuntungan dihitung dari modal rata-rata, bukan dari kas. Ongkir tidak dihitung sebagai penjualan. Uang diterima dihitung menurut tanggal tiap pembayaran.</p>"}, {"t": "Tab Master (data dasar)", "h": "<ul><li><b>Toko</b>: nama, nomor HP, dan Logo. <b>Ubah pengaturan</b>: DP minimal, margin target, jatuh tempo, peringatan ambil, awalan nomor nota, ukuran cetak, ongkir standar, gratis ongkir.</li><li><b>Supplier</b>: nama toko pemasok (Ubah, Hapus).</li><li><b>Barang</b>: <b>+ Barang</b> (nama, isi per satuan besar, stok awal, batas peringatan, modal per pcs, nama satuan). Di tiap barang: <b>+ Harga beli</b> (per supplier, per pcs atau per karton; yang termurah ditandai), <b>Tambah stok</b>, <b>Opname</b>, <b>Rusak</b>, <b>Riwayat stok</b>, <b>Salin</b>, <b>Ubah</b>, <b>Hapus</b>. Ada juga <b>Opname semua</b> dan impor atau ekspor CSV.</li><li><b>Parcel</b>: <b>+ Parcel</b> (nama, isi dengan tombol + dan -, harga jual). <b>Kemasan</b> (biaya per komponen), <b>Foto</b>. Aplikasi memberi peringatan kalau harga di bawah modal dan menampilkan modal serta untung.</li><li><b>Pembeli</b>: nama, nomor HP, alamat, catatan; impor atau ekspor CSV.</li><li>Barang, parcel, pembeli, dan supplier yang sudah dipakai di transaksi tidak bisa dihapus.</li></ul>"}, {"t": "Stok dan modal", "h": "<ul><li><b>Stok</b> berkurang saat penjualan disimpan. <b>Di rak sekarang</b> = stok ditambah barang yang sudah dipesan tetapi parcelnya belum dibuat.</li><li><b>Tambah stok</b>: pilih harga beli (supplier dan jenis), isi jumlah. Modal per pcs dihitung ulang sebagai rata-rata tertimbang dari stok lama dan belanja baru.</li><li><b>Opname</b>: isi jumlah fisik di rak; selisih tercatat. <b>Rusak</b>: kurangi stok barang rusak, kedaluwarsa, atau hilang.</li><li><b>Riwayat stok</b> mencatat penjualan, belanja, opname, rusak, dan pembatalan.</li><li>Peringatan merah muncul kalau stok di bawah batas barang atau tidak cukup untuk satu paket.</li></ul>"}, {"t": "Peran admin dan user", "h": "<ul><li><b>Admin</b>: semua tab, modal, untung, refund, pembatalan, pengaturan, dan cadangan.</li><li><b>User</b>: Jual, Pembeli, Nota, dan Master baca-saja; tanpa modal, untung, harga deal, refund, dan pembatalan.</li><li>PIN user dibuat admin di tab Cadangan, bagian Keamanan. Aplikasi terkunci otomatis setelah 3 menit tidak disentuh; PIN salah 5 kali menahan percobaan 30 detik.</li></ul>"}, {"t": "HP utama, HP cadangan, dan serah terima", "h": "<ul><li>Hanya <b>satu HP utama</b> yang boleh mencatat. <b>HP cadangan</b> hanya membaca (tab Nota, Rekap, Cadangan), supaya nomor nota dan stok tidak bentrok.</li><li><b>Serah terima</b> (di HP utama): Cadangan, <b>Serahkan peran utama ke HP lain</b>. Isi penanggung jawab berikutnya dan password file (boleh kosong). HP ini langsung menjadi cadangan, lalu file dikirim lewat Bluetooth, Quick Share, atau WhatsApp.</li><li>Di HP penerima: <b>Pulihkan</b>, pilih file, lalu jawab \"Jadikan HP ini HP UTAMA?\".</li><li>Banner di atas layar selalu menunjukkan HP UTAMA atau CADANGAN, nama HP, nomor giliran, dan penanggung jawab. Beri nama HP lewat <b>Nama HP ini</b>. Penanggung jawab bisa diubah lewat <b>Ubah penanggung jawab</b>. Kalau serah terima dibatalkan dan HP ini dijadikan utama lagi, aplikasi memberi peringatan dan menanyakan penanggung jawabnya.</li><li>Aturan: satu penanggung jawab per hari; serah terima saat toko tutup; transaksi saat serah terima dicatat di buku dulu; jangan memulihkan file lama ke HP utama.</li></ul>"}, {"t": "Cadangan dan pemulihan", "h": "<ul><li><b>Kirim cadangan</b>: pilih password (kosong berarti tanpa password; sangat disarankan memakai password). Catat password, file tidak bisa dibuka tanpanya.</li><li>Cadangkan tiap akhir hari. Banner merah menunjukkan jumlah perubahan dan sudah berapa hari sejak cadangan terakhir.</li><li><b>Pulihkan</b> mengganti seluruh data di HP itu. Aplikasi menolak file yang lebih tua, menyebut nota yang akan hilang, dan membandingkan nota terakhir sebelum Anda mengonfirmasi.</li><li><b>Hapus semua data</b> (dua konfirmasi) mengosongkan transaksi, barang, dan pembeli; PIN dan log tetap.</li><li>Data tersimpan di browser HP. Menghapus data situs di browser menghilangkan data, jadi cadangan wajib.</li></ul>"}, {"t": "Keamanan dan log", "h": "<ul><li>PIN hanyalah pembatas tampilan, bukan enkripsi data. Perlindungan sungguhan hanya untuk file cadangan berpassword.</li><li><b>Kode pemulihan PIN</b> muncul satu kali saat membuat PIN; <b>Buat kode pemulihan PIN</b> membuat yang baru. Di layar masuk, <b>Lupa PIN admin?</b> memakai kode itu.</li><li><b>Log aktivitas</b> di tab Cadangan mencatat penghapusan, pembatalan, refund, impor, pemulihan, pengaturan, dan pembaruan versi.</li></ul>"}, {"t": "Cara pindah ke versi baru", "h": "<ol><li>Di file versi lama: tab Cadangan, <b>Kirim cadangan</b> (dengan password).</li><li>Buka file versi baru (nama berakhiran versi, misalnya Aplikasi Parcel bonus Soal v1.2.2.html).</li><li>Di layar awal, pilih file cadangan di bawah \"Sudah punya file cadangan?\" atau pakai tombol Pulihkan, lalu masukkan password.</li><li>Cek tab Cadangan: nomor versi dan <b>Riwayat versi</b> menunjukkan fitur baru; Log aktivitas mencatat pembaruan.</li></ol><p>Jangan membuka data dari versi yang lebih baru di file versi lama; aplikasi akan memberi peringatan.</p>"}, {"t": "Uji coba dua HP (sebelum dipakai sungguhan)", "h": "<p>Siapkan HP A dan HP B dengan file yang sama persis. Centang tiap langkah (ada 16). Kriteria lulus ada di bagian akhir.</p><ol><li><b>HP A</b>: buat PIN admin (misalnya 1234) dan catat kode pemulihan. <i>Hasil: layar utama terbuka, banner HP UTAMA, giliran #0.</i></li><li><b>HP A</b>: Cadangan, <b>Nama HP ini</b> = HP A, lalu <b>Muat data master contoh</b> dan <b>Tambah 4 transaksi contoh</b>. <i>Hasil: tab Nota berisi INV-0001 sampai INV-0005.</i></li><li><b>HP A</b>: Jual satu transaksi (Ibu Eka, PARCEL HEMAT, DP minimal). <i>Hasil: INV-0006 terbit; stok Teh, Wafer, dan Gula 1/2 kg berkurang.</i></li><li><b>HP A</b>: Cadangan, <b>Serahkan peran utama</b>, penanggung jawab \"HP B\", password uji123, kirim file ke HP B. <i>Hasil: HP A langsung tertulis HP CADANGAN; hanya tab Nota, Rekap, Cadangan.</i></li><li><b>HP B</b>: buka file; di layar awal pilih file cadangan (tanpa membuat PIN dulu), isi password uji123, jawab Ya pada \"Jadikan HP ini HP UTAMA?\", lalu masuk dengan PIN dari HP A. <i>Hasil: HP UTAMA, giliran #1, penanggung jawab HP B; INV-0001 sampai INV-0006 ada.</i></li><li><b>HP B</b>: Jual (Bapak Budi, PARCEL 3), lalu Pembeli, Ibu Citra, <b>Lunasi sisa</b>. <i>Hasil: INV-0007 dan INV-0008 berurutan tanpa lompat atau kembar; nota pelunasan memuat DP dan Lunas.</i></li><li><b>HP A</b> (cadangan): cari tombol Jual, Lunasi, Batalkan. <i>Hasil: tidak ada.</i></li><li><b>HP B</b>: Serahkan peran utama ke HP A (penanggung jawab \"HP A\", password uji123). <b>HP A</b>: Pulihkan, pilih file, terima peran utama. <i>Hasil: HP A UTAMA giliran #2; HP B CADANGAN; INV-0008 ada di HP A.</i></li><li><b>Bandingkan</b> HP A dan HP B: Rekap (Semua periode) dan stok di Master. <i>Hasil: jumlah transaksi, total penjualan, sisa belum dibayar, stok, dan nomor nota terakhir sama.</i></li><li><b>HP A</b>: Pulihkan file dari langkah 4. <i>Hasil: ditolak dengan pesan \"File ini LEBIH TUA\".</i></li><li><b>HP A</b>: Pulihkan file terkunci dengan password salah. <i>Hasil: ditolak, data tidak berubah.</i></li><li><b>HP A</b>: catat satu transaksi baru (INV-0009), lalu Pulihkan file dari langkah 8. <i>Hasil: peringatan \"HP ini punya 1 nota yang TIDAK ada di file (INV-0009)\"; pilih Batal.</i></li><li><b>HP A</b>: Nota, INV-0009, <b>Batalkan</b>, pilih alasan. <i>Hasil: stok kembali, Riwayat stok mencatat \"Batal nota\", Log aktivitas mencatat.</i></li><li><b>PIN</b>: masukkan PIN salah 5 kali, tunggu 30 detik, lalu pakai <b>Lupa PIN admin?</b> dengan kode pemulihan. <i>Hasil: PIN baru bisa dibuat.</i></li><li><b>Nota</b>: buka satu nota, <b>Cetak / simpan PDF</b> dan <b>Bagikan WhatsApp</b>. Kalau ada printer 58 atau 80 mm, ubah ukuran di Pengaturan lalu coba cetak. <i>Hasil: tampilan rapi, tidak terpotong.</i></li><li><b>Selesai</b>: di kedua HP, <b>Hapus semua data</b> supaya nomor nota mulai dari awal. Catat PIN dan kode pemulihan.</li></ol><p><b>Kriteria lulus:</b> (1) tidak pernah ada dua HP yang bisa mencatat sekaligus; (2) data kedua HP sama setelah serah terima; (3) file lama, password salah, dan nota yang akan hilang selalu diperingatkan.</p>"}, {"t": "Istilah singkat", "h": "<ul><li><b>DP</b>: uang muka. <b>Opname</b>: menghitung stok fisik. <b>Giliran</b>: nomor urut serah terima. <b>Penanggung jawab</b>: orang yang memegang HP utama.</li><li><b>Reprint</b>: cetak ulang nota dengan isi yang sama. <b>Modal rata-rata</b>: rata-rata harga beli tertimbang dari stok lama dan baru.</li></ul>"}];
+BANTUAN.splice(BANTUAN.findIndex(x=>x.t=="Cara pindah ke versi baru"),0,{"t": "Cara membuka file di HP", "h": "<ul><li>Buka file dari aplikasi File atau Download lewat Chrome. Alamat di Chrome bisa berawalan content:// atau file://.</li><li>Penyimpanan data (di browser) terikat pada alamat itu. Kalau file dibuka dari lokasi atau cara yang berbeda, data bisa tampak kosong.</li><li>Selalu buka file yang sama dengan cara yang sama. Setelah menutup dan membuka lagi, pastikan data masih ada.</li><li>Kalau ada menu Tambahkan ke layar utama di Chrome, pakai itu agar tidak salah membuka.</li><li>Cadangkan tiap akhir hari, karena data hilang kalau data situs di browser dihapus.</li></ul>"});
+const K=t=>`<div class="kotak">${t}</div>`,P=t=>`<p style="margin:0">${t}</p>`;
+const BONUS=[
+{judul:"Struktur dokumen",items:[
+{n:"html",d:"Akar dokumen HTML. Atribut lang menentukan bahasa halaman.",demo:K("Semua elemen berada di dalam html."),c:`<html lang="id">\n  ...\n</html>`},
+{n:"head",d:"Informasi tentang halaman yang tidak tampil langsung, seperti judul dan metadata.",demo:K("Isi head: title, meta, link, style, script."),c:`<head>\n  <title>Judul</title>\n</head>`},
+{n:"body",d:"Seluruh isi halaman yang tampil di browser.",demo:K("Semua konten yang terlihat ada di body."),c:`<body>\n  <h1>Halo</h1>\n</body>`},
+{n:"title",d:"Judul halaman yang tampil di tab browser dan hasil pencarian.",demo:K("Judul ini tampil di tab browser, bukan di halaman."),c:`<title>Toko Saya</title>`},
+{n:"meta",d:"Informasi tambahan tentang halaman, misalnya karakter dan ukuran layar.",demo:K("Meta charset dan viewport diletakkan di head."),c:`<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width">`},
+{n:"link",d:"Menghubungkan file eksternal, biasanya stylesheet atau ikon.",demo:K("Link dipakai untuk memanggil file CSS atau ikon."),c:`<link rel="stylesheet" href="gaya.css">`},
+{n:"style",d:"Menulis CSS langsung di dalam halaman.",demo:K("Style mengatur tampilan elemen."),c:`<style>\n  p { color: blue; }\n</style>`},
+{n:"base",d:"Menentukan alamat dasar untuk semua tautan relatif.",demo:K("Base mengatur folder dasar link relatif."),c:`<base href="https://example.com/">`}]},
+{judul:"Struktur tata letak",items:[
+{n:"header",d:"Bagian pembuka halaman atau bagian, biasanya berisi logo, judul, dan menu.",demo:`<header class="kotak">Ini header</header>`,c:`<header>\n  <h1>Toko Saya</h1>\n</header>`},
+{n:"nav",d:"Kumpulan tautan navigasi.",demo:`<nav class="kotak"><a href="#">Beranda</a> · <a href="#">Produk</a></nav>`,c:`<nav>\n  <a href="/">Beranda</a>\n</nav>`},
+{n:"main",d:"Isi utama halaman yang unik. Sebaiknya hanya satu per halaman.",demo:`<main class="kotak">Isi utama halaman</main>`,c:`<main>\n  ...\n</main>`},
+{n:"section",d:"Pengelompokan konten tematik dalam halaman.",demo:`<section class="kotak">Bagian tematik</section>`,c:`<section>\n  <h2>Layanan</h2>\n</section>`},
+{n:"article",d:"Konten yang bisa berdiri sendiri, misalnya artikel atau postingan.",demo:`<article class="kotak">Artikel mandiri</article>`,c:`<article>\n  <h2>Judul</h2>\n</article>`},
+{n:"aside",d:"Konten pendukung yang terkait, seperti sidebar atau catatan.",demo:`<aside class="kotak">Info tambahan</aside>`,c:`<aside>\n  <p>Tips singkat</p>\n</aside>`},
+{n:"footer",d:"Bagian bawah yang berisi kontak, tautan kebijakan, atau hak cipta.",demo:`<footer class="kotak">&copy; 2026 Toko Saya</footer>`,c:`<footer>&copy; 2026</footer>`},
+{n:"div",d:"Wadah blok tanpa makna khusus, sering dipakai untuk tata letak.",demo:K("Ini div"),c:`<div class="kartu">...</div>`},
+{n:"span",d:"Wadah sebaris tanpa makna khusus.",demo:P(`Teks biasa <span class="tag">span</span> di tengah kalimat.`),c:`<span class="highlight">teks</span>`},
+{n:"address",d:"Informasi kontak pemilik konten atau penulis.",demo:`<address style="margin:0;font-style:normal">Banjarmasin, Kalimantan Selatan</address>`,c:`<address>Jl. Contoh No. 1</address>`}]},
+{judul:"Judul, paragraf, dan pengelompokan teks",items:[
+{n:"h1 sampai h6",d:"Judul bertingkat. h1 paling penting, h6 paling kecil.",demo:`<div><h3 style="margin:0;font-size:20px;font-weight:500">H1 judul</h3><h4 style="margin:0;font-size:16px;font-weight:500">H3 subjudul</h4></div>`,c:`<h1>Judul utama</h1>\n<h2>Subjudul</h2>`},
+{n:"p",d:"Paragraf teks.",demo:P("Ini adalah sebuah paragraf."),c:`<p>Ini adalah sebuah paragraf.</p>`},
+{n:"hr",d:"Garis pemisah antar bagian secara tematik.",demo:P("Bagian satu")+`<hr>`+P("Bagian dua"),c:`<hr>`},
+{n:"pre",d:"Menampilkan teks persis seperti yang ditulis, termasuk spasi dan baris baru.",demo:`<pre style="margin:0">Baris 1\n    Baris 2 menjorok</pre>`,c:`<pre>\n  teks apa adanya\n</pre>`},
+{n:"blockquote",d:"Kutipan panjang dari sumber lain.",demo:`<blockquote style="margin:0;padding-left:12px;border-left:3px solid var(--accent)">Kutipan panjang dari sebuah buku.</blockquote>`,c:`<blockquote>\n  Kutipan...\n</blockquote>`},
+{n:"figure dan figcaption",d:"Gambar, diagram, atau kode beserta keterangannya.",demo:`<figure style="margin:0">${K("Gambar")}<figcaption style="font-size:13px;color:var(--muted)">Keterangan gambar</figcaption></figure>`,c:`<figure>\n  <img src="a.jpg" alt="">\n  <figcaption>Keterangan</figcaption>\n</figure>`}]},
+{judul:"Teks semantik dan penekanan",items:[
+{n:"strong",d:"Menandai teks yang penting, biasanya tampil tebal.",demo:P("Harus <strong>dibaca</strong> dulu."),c:`<strong>Penting!</strong>`},
+{n:"em",d:"Menekankan teks, biasanya tampil miring.",demo:P("Ini <em>sangat</em> penting."),c:`<em>penekanan</em>`},
+{n:"b",d:"Teks tebal tanpa makna penting, misalnya nama produk.",demo:P("Harga <b>Rp 50.000</b>"),c:`<b>Teks tebal</b>`},
+{n:"i",d:"Teks miring tanpa penekanan, misalnya istilah asing.",demo:P("Istilah <i>deadline</i> sering dipakai."),c:`<i>istilah asing</i>`},
+{n:"u",d:"Teks bergaris bawah. Sebaiknya dihindari karena mirip tautan.",demo:P("Teks <u>bergaris bawah</u>"),c:`<u>teks</u>`},
+{n:"s",d:"Teks dicoret karena sudah tidak berlaku.",demo:P("Harga <s>Rp 80.000</s> Rp 50.000"),c:`<s>Rp 80.000</s>`},
+{n:"small",d:"Teks kecil, misalnya catatan atau hak cipta.",demo:`<small>Catatan kecil di bawah.</small>`,c:`<small>*Syarat berlaku</small>`},
+{n:"mark",d:"Menyorot teks, misalnya hasil pencarian.",demo:P("Cari kata <mark>HTML</mark> di halaman."),c:`<mark>kata kunci</mark>`},
+{n:"del",d:"Menandai teks yang dihapus dari dokumen.",demo:P("Jadwal <del>Senin</del> Selasa"),c:`<del>Senin</del>`},
+{n:"ins",d:"Menandai teks yang baru ditambahkan.",demo:P("Jadwal <ins>Selasa</ins>"),c:`<ins>Selasa</ins>`},
+{n:"sub dan sup",d:"Subskrip untuk indeks bawah dan superskrip untuk pangkat.",demo:P("H<sub>2</sub>O dan x<sup>2</sup>"),c:`H<sub>2</sub>O\nx<sup>2</sup>`},
+{n:"code",d:"Menandai potongan kode dalam kalimat.",demo:P("Gunakan <code>console.log()</code> untuk debug."),c:`<code>console.log()</code>`},
+{n:"kbd",d:"Menandai tombol keyboard.",demo:P("Tekan <kbd>Ctrl</kbd> + <kbd>C</kbd> untuk menyalin."),c:`<kbd>Ctrl</kbd>`},
+{n:"samp dan var",d:"samp untuk keluaran program, var untuk nama variabel.",demo:P("Keluaran: <samp>Berhasil</samp>, variabel <var>x</var>"),c:`<samp>Berhasil</samp>\n<var>x</var>`},
+{n:"q",d:"Kutipan pendek di dalam kalimat, otomatis diberi tanda kutip.",demo:P("Dia berkata <q>sampai jumpa</q>."),c:`<q>sampai jumpa</q>`},
+{n:"cite",d:"Judul karya yang dikutip, misalnya buku atau film.",demo:P("Dibaca dari <cite>Laskar Pelangi</cite>."),c:`<cite>Judul buku</cite>`},
+{n:"abbr",d:"Singkatan. Atribut title berisi kepanjangannya.",demo:P(`<abbr title="HyperText Markup Language">HTML</abbr> adalah bahasa web.`),c:`<abbr title="HyperText Markup Language">HTML</abbr>`},
+{n:"dfn",d:"Menandai istilah yang sedang didefinisikan.",demo:P("Sebuah <dfn>tautan</dfn> menghubungkan dua halaman."),c:`<dfn>tautan</dfn>`},
+{n:"time",d:"Menandai tanggal atau waktu dalam format yang bisa dibaca mesin.",demo:P(`Acara pada <time datetime="2026-10-18">18 Oktober 2026</time>`),c:`<time datetime="2026-10-18">18 Oktober 2026</time>`},
+{n:"data",d:"Menghubungkan teks dengan nilai data yang bisa dibaca mesin.",demo:P(`Produk: <data value="123">Kopi Gayo</data>`),c:`<data value="123">Kopi Gayo</data>`},
+{n:"bdi dan bdo",d:"Mengatur arah teks saat bercampur bahasa kanan ke kiri.",demo:P("Nama: <bdi>أحمد</bdi>"),c:`<bdi>أحمد</bdi>\n<bdo dir="rtl">teks</bdo>`},
+{n:"wbr",d:"Titik tempat browser boleh memotong kata panjang.",demo:`<p style="margin:0;width:160px">Kata sangat<wbr>panjang<wbr>sekali</p>`,c:`Kata sangat<wbr>panjang`},
+{n:"br",d:"Membuat baris baru tanpa paragraf baru.",demo:P("Baris pertama<br>Baris kedua"),c:`Baris pertama<br>Baris kedua`},
+{n:"ruby, rt, rp",d:"Menampilkan anotasi kecil di atas teks, misalnya cara baca huruf Jepang.",demo:`<ruby style="font-size:20px">漢<rt style="font-size:10px">kan</rt></ruby>`,c:`<ruby>漢<rt>kan</rt></ruby>`}]},
+{judul:"Daftar",items:[
+{n:"ul dan li",d:"Daftar tanpa urutan. Setiap item dibungkus li.",demo:`<ul style="margin:0"><li>Membaca</li><li>Olahraga</li></ul>`,c:`<ul>\n  <li>Membaca</li>\n  <li>Olahraga</li>\n</ul>`},
+{n:"ol",d:"Daftar bernomor. Atribut start mengatur angka awal.",demo:`<ol start="3" style="margin:0"><li>Item ketiga</li><li>Item keempat</li></ol>`,c:`<ol start="3">\n  <li>Item</li>\n</ol>`},
+{n:"dl, dt, dd",d:"Daftar istilah. dt untuk istilah, dd untuk penjelasan.",demo:`<dl style="margin:0"><dt><strong>HTML</strong></dt><dd style="margin-left:16px">Bahasa struktur web</dd></dl>`,c:`<dl>\n  <dt>HTML</dt>\n  <dd>Bahasa struktur web</dd>\n</dl>`}]},
+{judul:"Tautan dan gambar",items:[
+{n:"a",d:"Tautan ke halaman lain. href berisi alamat tujuan.",demo:`<a href="https://developer.mozilla.org/id/docs/Web/HTML" target="_blank" rel="noopener">Pelajari HTML di MDN</a>`,c:`<a href="https://example.com" target="_blank">Kunjungi</a>`},
+{n:"img",d:"Menampilkan gambar. alt berisi deskripsi untuk pembaca layar.",demo:`<img class="contoh" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/320px-Cat03.jpg" alt="Kucing">`,c:`<img src="kucing.jpg" alt="Kucing oranye">`},
+{n:"picture dan source",d:"Memilih gambar sesuai ukuran layar atau format.",demo:`<picture><source media="(min-width:600px)" srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/320px-Cat03.jpg"><img class="contoh" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/320px-Cat03.jpg" alt="Kucing"></picture>`,c:`<picture>\n  <source srcset="besar.webp">\n  <img src="kecil.jpg" alt="Kucing">\n</picture>`},
+{n:"map dan area",d:"Membuat gambar yang punya beberapa area bisa diklik.",demo:`<img class="contoh" usemap="#bn-peta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/320px-Cat03.jpg" alt="Peta"><map name="bn-peta"><area shape="rect" coords="0,0,100,100" href="#" alt="Area kiri atas"></map>`,c:`<img usemap="#peta" src="peta.jpg">\n<map name="peta">\n  <area shape="rect" coords="0,0,100,100" href="/a">\n</map>`},
+{n:"svg",d:"Gambar vektor yang tetap tajam di ukuran berapa pun.",demo:`<svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="30" fill="#185FA5"/></svg>`,c:`<svg width="80" height="80">\n  <circle cx="40" cy="40" r="30" fill="blue"/>\n</svg>`},
+{n:"math",d:"Menulis rumus matematika dengan format standar MathML.",demo:`<math><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mn>1</mn></math>`,c:`<math>\n  <msup><mi>x</mi><mn>2</mn></msup>\n</math>`},
+{n:"canvas",d:"Area untuk menggambar grafik dengan JavaScript.",demo:`<canvas width="200" height="80" style="border:1px solid var(--border);border-radius:8px;max-width:100%"></canvas><button class="kedua" onclick="const c=this.previousElementSibling.getContext('2d');c.fillStyle='#185FA5';c.fillRect(20,20,60,40)">Gambar kotak</button>`,c:`<canvas id="kanvas" width="200" height="80"></canvas>`},
+{n:"iframe",d:"Menampilkan halaman lain di dalam halaman ini.",demo:`<iframe srcdoc="&lt;p style=font-family:sans-serif&gt;Isi iframe&lt;/p&gt;" style="width:100%;height:110px;border:1px solid var(--border);border-radius:8px"></iframe>`,c:`<iframe src="https://example.com" width="400" height="200"></iframe>`},
+{n:"embed dan object",d:"Menyisipkan konten eksternal seperti PDF atau objek lain.",demo:K("Embed dan object dipakai untuk menyisipkan PDF atau konten eksternal."),c:`<embed src="dokumen.pdf" type="application/pdf" width="400" height="300">\n<object data="file.pdf"></object>`},
+{n:"param",d:"Memberi parameter tambahan untuk elemen object.",demo:K("Param hanya dipakai di dalam object."),c:`<object data="video.swf">\n  <param name="autoplay" value="true">\n</object>`}]},
+{judul:"Audio, video, dan lainnya",items:[
+{n:"audio",d:"Memutar file audio dengan kontrol bawaan.",demo:`<audio controls src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3" style="width:100%"></audio>`,c:`<audio controls src="musik.mp3"></audio>`},
+{n:"video",d:"Memutar file video dengan kontrol bawaan.",demo:`<video controls src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" style="width:100%"></video>`,c:`<video controls src="film.mp4"></video>`},
+{n:"source",d:"Sumber file alternatif untuk audio atau video sesuai format yang didukung.",demo:`<audio controls style="width:100%"><source src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3" type="audio/mpeg"></audio>`,c:`<audio controls>\n  <source src="musik.mp3" type="audio/mpeg">\n</audio>`},
+{n:"track",d:"Menambahkan subtitle atau teks terjemahan pada video.",demo:K("Subtitle ditambahkan dengan track di dalam video."),c:`<video controls src="film.mp4">\n  <track src="sub.vtt" kind="subtitles" srclang="id">\n</video>`}]},
+{judul:"Tabel",items:[
+{n:"table",d:"Menampilkan data dalam baris dan kolom.",demo:`<table><tr><th>Nama</th><th>Kota</th></tr><tr><td>Andi</td><td>Banjarmasin</td></tr></table>`,c:`<table>\n  <tr><th>Nama</th></tr>\n  <tr><td>Andi</td></tr>\n</table>`},
+{n:"caption",d:"Judul atau keterangan tabel.",demo:`<table><caption style="font-size:13px;color:var(--muted);text-align:left">Daftar siswa</caption><tr><th>Nama</th></tr><tr><td>Andi</td></tr></table>`,c:`<table>\n  <caption>Daftar siswa</caption>\n</table>`},
+{n:"thead, tbody, tfoot",d:"Membagi tabel menjadi bagian kepala, isi, dan kaki.",demo:`<table><thead><tr><th>Produk</th><th>Harga</th></tr></thead><tbody><tr><td>Kopi</td><td>20.000</td></tr></tbody><tfoot><tr><td>Total</td><td>20.000</td></tr></tfoot></table>`,c:`<thead>...</thead>\n<tbody>...</tbody>\n<tfoot>...</tfoot>`},
+{n:"colgroup dan col",d:"Mengatur gaya untuk satu atau beberapa kolom sekaligus.",demo:`<table><colgroup><col style="background:var(--code-bg)"><col></colgroup><tr><td>A</td><td>B</td></tr></table>`,c:`<colgroup>\n  <col span="2" style="width:50%">\n</colgroup>`},
+{n:"tr, th, td",d:"tr untuk baris, th untuk judul kolom, td untuk isi sel.",demo:`<table><tr><th>Judul</th></tr><tr><td>Isi sel</td></tr></table>`,c:`<tr>\n  <th>Judul</th>\n  <td>Isi</td>\n</tr>`},
+{n:"colspan dan rowspan",d:"Menggabungkan beberapa kolom atau baris dalam satu sel.",demo:`<table><tr><th colspan="2">Gabungan dua kolom</th></tr><tr><td>A</td><td>B</td></tr></table>`,c:`<th colspan="2">Judul</th>`}]},
+{judul:"Form",items:[
+{n:"form",d:"Membungkus input yang dikirim bersama.",demo:`<form onsubmit="event.preventDefault();this.nextElementSibling.textContent='Form terkirim (demo)'"><input type="text" placeholder="Nama" required style="margin-bottom:8px"><button type="submit">Kirim</button></form><div class="kotak">Form belum dikirim</div>`,c:`<form action="/simpan" method="post">\n  ...\n</form>`},
+{n:"fieldset dan legend",d:"Mengelompokkan input yang terkait dalam satu kotak dengan judul.",demo:`<fieldset style="border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin:0"><legend style="font-size:13px;color:var(--muted);padding:0 4px">Pilih hobi</legend><label class="opsi"><input type="checkbox"> Membaca</label><label class="opsi"><input type="checkbox"> Musik</label></fieldset>`,c:`<fieldset>\n  <legend>Pilih hobi</legend>\n</fieldset>`},
+{n:"label",d:"Judul untuk sebuah input. Klik teksnya akan memilih input tersebut.",demo:`<label class="opsi"><input type="checkbox"> Klik teks ini juga bisa mencentang</label>`,c:`<label for="nama">Nama</label>\n<input id="nama" type="text">`},
+{n:"input text",d:"Kolom untuk satu baris teks.",demo:`<input type="text" placeholder="Ketik namamu">`,c:`<input type="text" name="nama">`},
+{n:"input email",d:"Kolom alamat email dengan pemeriksaan format otomatis.",demo:`<input type="email" placeholder="contoh@email.com">`,c:`<input type="email" name="email">`},
+{n:"input password",d:"Kolom yang menyembunyikan karakter yang diketik.",demo:`<input type="password" placeholder="Kata sandi">`,c:`<input type="password" name="sandi">`},
+{n:"input tel",d:"Kolom nomor telepon. Di HP muncul keyboard angka.",demo:`<input type="tel" placeholder="08xxxxxxxxxx">`,c:`<input type="tel" name="telepon">`},
+{n:"input url",d:"Kolom alamat web dengan pemeriksaan URL otomatis.",demo:`<input type="url" placeholder="https://contoh.com">`,c:`<input type="url" name="web">`},
+{n:"input search",d:"Kolom pencarian dengan tombol hapus bawaan.",demo:`<input type="search" placeholder="Cari sesuatu...">`,c:`<input type="search" name="q">`},
+{n:"input number",d:"Kolom angka dengan batas min dan max.",demo:`<input type="number" min="1" max="10" value="1">`,c:`<input type="number" min="1" max="10">`},
+{n:"input range",d:"Penggeser untuk memilih nilai dalam rentang.",demo:`<input type="range" min="0" max="100" value="50" style="accent-color:var(--accent)">`,c:`<input type="range" min="0" max="100">`},
+{n:"input date",d:"Pemilih tanggal dengan kalender.",demo:`<input type="date">`,c:`<input type="date" name="lahir">`},
+{n:"input time",d:"Pemilih jam dan menit.",demo:`<input type="time">`,c:`<input type="time" name="jam">`},
+{n:"input datetime-local",d:"Pemilih tanggal dan jam sekaligus.",demo:`<input type="datetime-local">`,c:`<input type="datetime-local">`},
+{n:"input month",d:"Pemilih bulan dan tahun.",demo:`<input type="month">`,c:`<input type="month">`},
+{n:"input week",d:"Pemilih minggu tertentu dalam tahun.",demo:`<input type="week">`,c:`<input type="week">`},
+{n:"input color",d:"Pemilih warna yang menghasilkan kode heksadesimal.",demo:`<input type="color" value="#185fa5" style="width:60px;height:36px;border:none;background:none;padding:0">`,c:`<input type="color" name="warna">`},
+{n:"input file",d:"Memilih file dari perangkat untuk diunggah.",demo:`<input type="file" accept="image/*">`,c:`<input type="file" accept="image/*">`},
+{n:"input checkbox",d:"Kotak centang untuk memilih satu, beberapa, atau tidak sama sekali.",demo:`<label class="opsi"><input type="checkbox" checked> Setuju syarat</label>`,c:`<input type="checkbox" name="setuju" value="ya">`},
+{n:"input radio",d:"Hanya satu pilihan dalam kelompok dengan name yang sama.",demo:`<label class="opsi"><input type="radio" name="bn-g1"> Ya</label><label class="opsi"><input type="radio" name="bn-g1"> Tidak</label>`,c:`<input type="radio" name="jk" value="L"> Laki-laki`},
+{n:"input hidden",d:"Data tersembunyi yang ikut terkirim tetapi tidak tampil.",demo:K("Input hidden tidak tampil di halaman."),c:`<input type="hidden" name="id" value="42">`},
+{n:"input submit, reset, button",d:"Tombol untuk mengirim, mengosongkan, atau aksi umum.",demo:`<input type="submit" value="Kirim" style="width:auto"> <input type="reset" value="Reset" style="width:auto"> <input type="button" value="Tombol" style="width:auto">`,c:`<input type="submit" value="Kirim">`},
+{n:"input image",d:"Tombol berupa gambar yang bisa diklik untuk mengirim form.",demo:K("Input image dipakai sebagai tombol bergambar."),c:`<input type="image" src="tombol.png" alt="Kirim">`},
+{n:"button",d:"Tombol untuk menjalankan aksi saat diklik.",demo:`<button onclick="this.nextElementSibling.textContent='Sudah diklik!'">Klik saya</button><div class="kotak">Belum diklik</div>`,c:`<button onclick="klik()">Klik saya</button>`},
+{n:"textarea",d:"Kolom teks besar untuk banyak baris.",demo:`<textarea placeholder="Tulis pesanmu..." style="min-height:64px;resize:vertical"></textarea>`,c:`<textarea name="pesan" rows="4"></textarea>`},
+{n:"select dan option",d:"Daftar pilihan dropdown.",demo:`<select><option>Banjarmasin</option><option>Surabaya</option><option>Bandung</option></select>`,c:`<select name="kota">\n  <option value="bjm">Banjarmasin</option>\n</select>`},
+{n:"optgroup",d:"Mengelompokkan opsi dengan judul di dalam select.",demo:`<select multiple size="3"><optgroup label="Jawa"><option>Jakarta</option><option>Surabaya</option></optgroup><optgroup label="Kalimantan"><option>Banjarmasin</option><option>Balikpapan</option></optgroup></select>`,c:`<select>\n  <optgroup label="Kalimantan">\n    <option>Banjarmasin</option>\n  </optgroup>\n</select>`},
+{n:"datalist",d:"Saran pilihan saat mengetik, pengguna tetap bisa mengetik bebas.",demo:`<input list="bn-buah" placeholder="Ketik buah..."><datalist id="bn-buah"><option value="Apel"><option value="Jeruk"><option value="Mangga"></datalist>`,c:`<input list="buah">\n<datalist id="buah">\n  <option value="Apel">\n</datalist>`},
+{n:"output",d:"Menampilkan hasil perhitungan dari input dalam form.",demo:`<form oninput="this.querySelector('output').value=Number(this.a.value)+Number(this.b.value)"><input name="a" type="number" value="2" style="width:70px"> + <input name="b" type="number" value="3" style="width:70px"> = <output name="hasil">5</output></form>`,c:`<output name="total" for="a b"></output>`},
+{n:"progress",d:"Menampilkan kemajuan suatu tugas.",demo:`<progress value="70" max="100" style="width:100%;accent-color:var(--accent)"></progress>`,c:`<progress value="70" max="100"></progress>`},
+{n:"meter",d:"Menampilkan nilai dalam rentang tertentu, misalnya kapasitas penyimpanan.",demo:`<meter value="0.6" min="0" max="1" style="width:100%"></meter>`,c:`<meter value="0.6" min="0" max="1"></meter>`}]},
+{judul:"Interaktif",items:[
+{n:"details dan summary",d:"Bagian yang bisa dibuka dan ditutup. summary adalah judul yang diklik.",demo:`<details><summary>Apa itu HTML?</summary><p style="margin:8px 0 0;font-size:14px">HTML adalah bahasa untuk menyusun halaman web.</p></details>`,c:`<details>\n  <summary>Judul</summary>\n  <p>Isi</p>\n</details>`},
+{n:"dialog",d:"Kotak dialog atau popup yang dibuka lewat JavaScript.",demo:`<button onclick="this.nextElementSibling.showModal()">Buka dialog</button><dialog><p>Ini kotak dialog.</p><button class="kedua" onclick="this.parentElement.close()">Tutup</button></dialog>`,c:`<dialog id="dlg">\n  <p>Halo!</p>\n</dialog>\n<button onclick="dlg.showModal()">Buka</button>`}]},
+{judul:"Skrip dan template",items:[
+{n:"template",d:"Blok HTML yang tidak tampil sampai disalin lewat JavaScript.",demo:`<template id="bn-t"><p style="margin:0">Teks dari template</p></template><button class="kedua" onclick="document.getElementById('bn-tp').appendChild(document.getElementById('bn-t').content.cloneNode(true))">Tambah</button><div id="bn-tp"></div>`,c:`<template id="kartu">\n  <p>Isi kartu</p>\n</template>`},
+{n:"slot",d:"Tempat untuk menyisipkan konten dari luar pada Web Component.",demo:K("Slot dipakai di dalam Web Component (shadow DOM)."),c:`<template>\n  <slot name="judul"></slot>\n</template>`},
+{n:"script",d:"Menjalankan kode JavaScript di halaman.",demo:K("Script menjalankan kode JavaScript, misalnya console.log()."),c:`<script>\n  console.log("Halo");\n<\/script>`},
+{n:"noscript",d:"Isi yang hanya tampil jika JavaScript dimatikan.",demo:`<div class="kotak"><noscript>JavaScript dimatikan.</noscript>Isi biasa (JavaScript aktif)</div>`,c:`<noscript>\n  Aktifkan JavaScript.\n</noscript>`}]},
+{judul:"Elemen tambahan (lengkap)",items:[
+{n:"html",d:"Pembungkus seluruh dokumen. Atribut lang menentukan bahasa halaman.",demo:K("Seluruh dokumen berada di dalam html, dengan head dan body di dalamnya."),c:`<html lang="id">\n  <head>...</head>\n  <body>...</body>\n</html>`},
+{n:"head",d:"Bagian informasi halaman yang tidak tampil, berisi title, meta, link, dan style.",demo:K("Head berisi pengaturan yang tidak terlihat langsung di halaman."),c:`<head>\n  <meta charset="UTF-8">\n  <title>Judul</title>\n</head>`},
+{n:"body",d:"Bagian isi halaman yang tampil di layar.",demo:K("Semua yang tampil di layar berada di dalam body."),c:`<body>\n  <h1>Halo</h1>\n</body>`},
+{n:"hgroup",d:"Mengelompokkan judul utama dan subjudul agar dianggap satu judul.",demo:`<hgroup style="margin:0"><h2 style="margin:0;font-size:18px;font-weight:500">Judul utama</h2><p style="margin:0;font-size:14px;color:var(--muted)">Subjudul</p></hgroup>`,c:`<hgroup>\n  <h1>Judul</h1>\n  <p>Subjudul</p>\n</hgroup>`},
+{n:"search",d:"Area untuk fitur pencarian, berisi kolom pencarian dan tombolnya.",demo:`<search><form onsubmit="event.preventDefault()"><input type="search" placeholder="Cari..."></form></search>`,c:`<search>\n  <form>\n    <input type="search" name="q">\n  </form>\n</search>`},
+{n:"data",d:"Menghubungkan teks yang terlihat dengan nilai yang bisa dibaca mesin.",demo:P(`Produk: <data value="12345">Kopi Banjar</data>`),c:`<data value="12345">Kopi Banjar</data>`},
+{n:"bdo",d:"Memaksa arah teks tertentu, misalnya dari kanan ke kiri.",demo:P(`<bdo dir="rtl">Teks ini dibalik</bdo>`),c:`<bdo dir="rtl">teks</bdo>`},
+{n:"ruby, rt, rp",d:"Memberi anotasi kecil di atas karakter, misalnya cara baca huruf Jepang atau Mandarin.",demo:`<ruby style="font-size:18px">漢<rp>(</rp><rt style="font-size:10px">kan</rt><rp>)</rp></ruby>`,c:`<ruby>\n  漢<rp>(</rp><rt>kan</rt><rp>)</rp>\n</ruby>`},
+{n:"th dengan scope",d:"Menandai apakah judul berlaku untuk kolom atau baris, agar pembaca layar membacanya dengan benar.",demo:`<table><tr><th scope="col">Nama</th><th scope="col">Nilai</th></tr><tr><th scope="row">Andi</th><td>90</td></tr></table>`,c:`<th scope="col">Nama</th>\n<th scope="row">Andi</th>`},
+{n:"colgroup dan col",d:"Mengatur gaya untuk satu kolom atau sekelompok kolom tabel.",demo:`<table><colgroup><col style="background:var(--code-bg)"><col></colgroup><tr><td>A</td><td>B</td></tr></table>`,c:`<colgroup>\n  <col style="background:#eee">\n  <col>\n</colgroup>`},
+{n:"map dan area",d:"Membuat area yang bisa diklik di atas sebuah gambar, masing-masing dengan tautannya.",demo:`<img usemap="#bn-peta2" width="160" height="60" alt="Peta" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27160%27 height=%2760%27%3E%3Crect width=%27160%27 height=%2760%27 fill=%27%23185FA5%27/%3E%3C/svg%3E"><map name="bn-peta2"><area shape="rect" coords="0,0,80,60" href="#" alt="Kiri"><area shape="rect" coords="80,0,160,60" href="#" alt="Kanan"></map>`,c:`<img src="peta.jpg" usemap="#peta" alt="Peta">\n<map name="peta">\n  <area shape="rect" coords="0,0,80,60" href="kiri.html" alt="Kiri">\n</map>`},
+{n:"object",d:"Menampilkan file eksternal seperti PDF atau objek lain di halaman.",demo:`<object data="data:text/plain,Isi%20file%20object" type="text/plain" width="220" height="60"><p>Browser tidak mendukung objek ini.</p></object>`,c:`<object data="dokumen.pdf" type="application/pdf" width="400" height="300"></object>`},
+{n:"embed",d:"Menampilkan konten eksternal seperti plugin atau file tertentu.",demo:`<embed src="data:text/plain,Isi%20file%20embed" type="text/plain" width="220" height="50">`,c:`<embed src="dokumen.pdf" type="application/pdf" width="400" height="300">`},
+{n:"param",d:"Memberikan parameter tambahan untuk elemen object.",demo:K("Param dipakai di dalam object untuk mengirim pengaturan tambahan."),c:`<object data="file.swf">\n  <param name="autoplay" value="true">\n</object>`},
+{n:"slot",d:"Tempat untuk menampilkan konten dari luar pada komponen buatan sendiri (Web Components).",demo:K("Slot dipakai di dalam Web Components untuk menerima isi dari luar."),c:`<template>\n  <slot name="judul"></slot>\n</template>`},
+{n:"math",d:"Menampilkan rumus matematika dengan format MathML.",demo:`<math style="font-size:18px"><mi>x</mi><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></math>`,c:`<math>\n  <mi>x</mi><mo>=</mo><mn>2</mn>\n</math>`},
+{n:"area (dan img usemap)",d:"Sudah dicakup di bagian map dan area.",demo:K("Lihat contoh map dan area di atas."),c:``}]},
+{judul:"Judul bertingkat lengkap dan contoh gabungan",items:[
+{n:"h2 sampai h6",d:"Judul bertingkat lengkap. Semakin besar nomornya, semakin kecil ukuran dan tingkat kepentingannya.",demo:`<div style="display:flex;flex-direction:column;gap:2px"><h3 style="margin:0;font-size:20px;font-weight:500">H2 Judul bagian</h3><h4 style="margin:0;font-size:17px;font-weight:500">H3 Subjudul</h4><h5 style="margin:0;font-size:15px;font-weight:500">H4 Judul kecil</h5><h6 style="margin:0;font-size:14px;font-weight:500">H5 Judul lebih kecil</h6><h6 style="margin:0;font-size:13px;font-weight:500">H6 Judul terkecil</h6></div>`,c:`<h2>Judul bagian</h2>\n<h3>Subjudul</h3>\n<h4>Judul kecil</h4>\n<h5>Judul lebih kecil</h5>\n<h6>Judul terkecil</h6>`},
+{n:"Contoh gabungan halaman",d:"Beberapa elemen dipakai bersama dalam satu halaman sederhana: header, nav, main, article, dan footer.",demo:`<div class="kotak" style="padding:0;overflow:hidden"><header style="padding:8px 12px;border-bottom:1px solid var(--border)"><strong>Toko Saya</strong></header><nav style="padding:6px 12px;font-size:13px;border-bottom:1px solid var(--border)"><a href="#">Beranda</a> · <a href="#">Produk</a></nav><main style="padding:10px 12px"><article><h4 style="margin:0 0 4px;font-size:15px;font-weight:500">Kopi Banjar</h4><p style="margin:0;font-size:13px">Kopi khas <mark>Kalimantan Selatan</mark>.</p></article></main><footer style="padding:6px 12px;font-size:12px;border-top:1px solid var(--border)">&copy; 2026</footer></div>`,c:`<header>...</header>\n<nav>...</nav>\n<main>\n  <article>...</article>\n</main>\n<footer>...</footer>`},
+{n:"Contoh gabungan form",d:"Label, input, select, dan button dipakai bersama dalam satu formulir pendaftaran sederhana.",demo:`<form onsubmit="event.preventDefault()" style="display:flex;flex-direction:column;gap:8px"><label for="bn-ig-nama" style="font-size:13px;color:var(--muted)">Nama lengkap</label><input id="bn-ig-nama" type="text" required><label for="bn-ig-kota" style="font-size:13px;color:var(--muted)">Kota</label><select id="bn-ig-kota"><option>Banjarmasin</option><option>Surabaya</option></select><button type="submit">Daftar</button></form>`,c:`<form>\n  <label for="nama">Nama lengkap</label>\n  <input id="nama" type="text" required>\n  <label for="kota">Kota</label>\n  <select id="kota"><option>Banjarmasin</option></select>\n  <button type="submit">Daftar</button>\n</form>`}]}
+];
+function vBns(){return `<div id="bonus"><h2>Referensi Lengkap Elemen HTML</h2><p class="intro">Elemen HTML standar per kategori. Bisa dicari, dan setiap contoh bisa langsung dicoba.</p><input type="search" id="bn-cari" placeholder="Cari elemen, misalnya: input, table, video..."><div class="jumlah" id="bn-jumlah"></div>
+<section class="top-tabs"><div class="tab-bar" role="tablist"><button class="tab-btn aktif" data-tab="bn-jual">Jual</button><button class="tab-btn" data-tab="bn-pembeli">Pembeli</button><button class="tab-btn" data-tab="bn-nota">Nota</button></div>
+<div class="tab-panel aktif" id="bn-jual"><h3>Jual</h3><p>Isi halaman untuk transaksi penjualan.</p></div><div class="tab-panel" id="bn-pembeli"><h3>Pembeli</h3><p>Daftar data pembeli.</p></div><div class="tab-panel" id="bn-nota"><h3>Nota</h3><p>Riwayat nota yang sudah dibuat.</p></div></section>
+<div class="bn-row"><div class="atas"><div class="demo">${P("Klik salah satu tab di atas untuk berpindah isi.")}</div><div><p class="nama">Top tabs</p><p class="penjelasan">Deretan tab di bagian atas yang berpindah isi saat diklik. Tab yang aktif diberi garis di bawahnya.</p></div></div><p class="label">Contoh penggunaan:</p><pre>&lt;div class="tab-bar"&gt;\n  &lt;button class="tab-btn aktif" data-tab="jual"&gt;Jual&lt;/button&gt;\n  &lt;button class="tab-btn" data-tab="pembeli"&gt;Pembeli&lt;/button&gt;\n&lt;/div&gt;\n&lt;div class="tab-panel aktif" id="jual"&gt;...&lt;/div&gt;\n&lt;div class="tab-panel" id="pembeli"&gt;...&lt;/div&gt;</pre></div>
+<div id="bn-daftar"></div></div>`}
+function bonusInit(){
+ const wd=document.getElementById("bn-daftar"),ci=document.getElementById("bn-cari"),jm=document.getElementById("bn-jumlah"),grup=[];
+ BONUS.forEach(k=>{const h=document.createElement("h2");h.className="kategori";h.textContent=k.judul;wd.appendChild(h);const g={h,r:[]};grup.push(g);
+  k.items.forEach(it=>{const r=document.createElement("div");r.className="bn-row";r.innerHTML='<div class="atas"><div class="demo"></div><div><p class="nama"></p><p class="penjelasan"></p></div></div><p class="label">Contoh penggunaan:</p><pre></pre>';
+   r.querySelector(".demo").innerHTML=it.demo;r.querySelector(".nama").textContent=it.n;r.querySelector(".penjelasan").textContent=it.d;r.querySelector("pre").textContent=it.c||"(lihat elemen terkait)";wd.appendChild(r);g.r.push({r,t:(it.n+" "+it.d).toLowerCase()})})});
+ const total=grup.reduce((a,g)=>a+g.r.length,0);
+ const saring=()=>{const q=ci.value.trim().toLowerCase();let n=0;grup.forEach(g=>{let a=0;g.r.forEach(x=>{const ok=!q||x.t.includes(q);x.r.style.display=ok?"":"none";if(ok)a++});g.h.style.display=a?"":"none";n+=a});jm.textContent=n+" elemen ditampilkan dari "+total};
+ ci.addEventListener("input",saring);saring();
+ document.querySelectorAll("#bonus .tab-btn").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll("#bonus .tab-btn").forEach(x=>x.classList.remove("aktif"));document.querySelectorAll("#bonus .tab-panel").forEach(x=>x.classList.remove("aktif"));
+  b.classList.add("aktif");document.getElementById(b.dataset.tab).classList.add("aktif")}));
+}
+let soalNo=0,soalHasil={},soalCoba={},soalIsi={};
+const isian=c=>{const a=[],v=z=>{if(!a.includes(z))a.push(z)};
+ c.replace(/\b(name|id|for|class|alt|title|placeholder|label|value|href|src|srcset|data|action|datetime|lang|width|height)="([^"]*)"/g,(m,k,x)=>{v(k+'="'+x+'"');return m});
+ c.replace(/(^|>)([^<>]+)(?=<|$)/g,(m,p,x)=>{const q=x.trim().replace(/\s+/g," ");if(q&&!/^[.\s]*$/.test(q))v('tulisan "'+q+'"');return m});return a};
+const TAKTAMPIL=["html","head","title","meta","link","style","base","script"];
+const soalList=()=>{const l=BONUS.flatMap(k=>k.items).filter(x=>x.c),i=l.findIndex(x=>x.n=="head"),h=l.splice(i,1)[0];return [h,...l].map(x=>{const a=isian(x.c);return {t:"Tulis kode HTML untuk elemen "+x.n+". "+x.d+(a.length?" Gunakan isian: "+a.join(", ")+".":"")+(TAKTAMPIL.includes(x.n)?" Elemen ini tidak terlihat langsung di halaman, jadi tab Hasil bisa tampak kosong.":" Setelah menulis, buka tab Hasil untuk melihat tampilan nyatanya."),k:x.c}})};
+const CPOOL=["Toko Saya","Kopi Banjar","Halo Dunia","Pesan Baru","Contoh Teks","Barang Murah","Salam Hangat"],IPOOL=["pelanggan","produk","barang","tujuan","catatan","harga","kota"];
+function contoh(c){
+ const m={},sl=v=>v.toLowerCase().replace(/\s+/g,""),pick=(pool,t)=>{if(m[t]!==undefined)return m[t];let h=0;for(const ch of t)h=(h*31+ch.charCodeAt(0))>>>0;let v=pool[h%pool.length];if(v.toLowerCase()==t.toLowerCase())v=pool[(h+1)%pool.length];return m[t]=v};
+ let r=c.replace(/\b(name|id|for|class)="([^"]+)"/g,(a,k,v)=>k+'="'+pick(IPOOL,v)+'"')
+  .replace(/\b(alt|title|placeholder|label|value)="([^"]*)"/g,(a,k,v)=>k+'="'+(/^\d+$/.test(v)?+v+7:v?pick(CPOOL,v):v)+'"')
+  .replace(/\bstart="(\d+)"/g,(a,v)=>'start="'+(+v+2)+'"').replace(/\blang="id"/g,'lang="en"').replace(/\bdatetime="[^"]*"/g,'datetime="2026-12-25"')
+  .replace(/\b(href|src|srcset|data|action)="([^"#\/][^"]*)"/g,(a,k,v)=>/^https?:\/\//.test(v)?k+'="https://'+sl(pick(CPOOL,v))+'.com/"':k+'="'+(/^(.+)\.(\w+)$/.test(v)?sl(pick(CPOOL,v))+"."+v.split(".").pop():pick(IPOOL,v))+'"')
+  .replace(/\bblue\b/g,"red").replace(/#eee\b/g,"#ccc")
+  .replace(/(^|>)([^<>]+)(?=<|$)/g,(a,p,t)=>{const q=t.trim();if(q.length<=2||/^[.\s]*$/.test(q)||/^\d+$/.test(q))return a;
+   const l=t.match(/^\s*/)[0],e=t.match(/\s*$/)[0];let v;
+   if(/[{(;=]/.test(q))v=q.replace(/"([^"]*)"/g,(x,w)=>'"'+pick(CPOOL,w)+'"');else if(/&/.test(q))v=q.replace(/\d+/g,n=>+n+1);
+   else if(/^\d+ \w+ \d{4}$/.test(q))v="25 Desember 2026";else v=pick(CPOOL,q);return p+l+v+e});
+ return r===c?c.replace(/<([a-z0-9]+)/i,'<$1 id="contoh"'):r
+}
+function vHasil(){return `<div id="hasil"><h2>Hasil</h2><div class="m" id="hs-info" style="margin-bottom:10px"></div><div class="btns" style="display:flex;gap:8px;margin-bottom:10px"><button class="b" onclick="go('soal')">Kembali ke soal</button><button class="b" onclick="hasilInit()">Muat ulang</button></div><div id="hs-tab" hidden></div><iframe id="hs-if" sandbox="allow-scripts allow-forms" title="Hasil jawaban"></iframe></div>`}
+function hasilInit(){
+ const k=soalIsi[soalNo]||"",i=document.getElementById("hs-info"),f=document.getElementById("hs-if"),t=document.getElementById("hs-tab");
+ if(!k.trim()){i.textContent="Belum ada jawaban. Tulis jawaban di tab Soal dulu.";f.hidden=true;t.hidden=true;return}
+ f.hidden=false;t.hidden=true;
+ i.textContent="Tampilan nyata dari jawabanmu di soal nomor "+(soalNo+1)+":";
+ if(/<title[\s>]/i.test(k)){t.hidden=false;t.textContent="Judul di tab browser: "+(new DOMParser().parseFromString(k,"text/html").title||"(kosong)")}
+ f.srcdoc=/<(html|head|body)[\s>]/i.test(k)?"<!DOCTYPE html>"+k:'<!DOCTYPE html><meta charset="utf-8"><style>body{font-family:system-ui,sans-serif;margin:12px;color:#111;background:#fff}</style>'+k
+}
+function vSoal(){return `<div id="soal"><h2>Soal</h2><div class="m" id="sl-skor" style="margin-bottom:10px"></div><div id="sl-daftar"></div><div class="nv"><button class="kedua" id="sl-prev">Sebelumnya</button><button class="kedua" id="sl-next">Berikutnya</button></div><div class="nv" style="margin-top:10px"><input type="number" id="sl-ke" min="1" placeholder="Ke nomor..."><button class="kedua" id="sl-go">Pergi</button></div></div>`}
+function soalInit(){
+ const cmp=t=>norm(t.replace(/=\s*'([^']*)'/g,'="$1"').replace(/\s*=\s*"/g,'="').replace(/<([a-z0-9]+)((?:\s+[^\s<>=]+(?:="[^"]*")?)+)\s*(\/?)>/gi,(m,n,z,e)=>"<"+n+" "+z.match(/[^\s=]+(?:="[^"]*")?/g).sort().join(" ")+e+">"));
+ const L=soalList(),$=id=>document.getElementById(id),norm=t=>t.replace(/\s*([<>])\s*/g,"$1").replace(/\s+/g," ").trim().toLowerCase();
+ const skor=()=>{const v=Object.values(soalHasil);$("sl-skor").textContent="Benar: "+v.filter(a=>a).length+" | Salah: "+v.filter(a=>!a).length+" | Soal: "+L.length};
+ const tampil=()=>{const x=L[soalNo],wd=$("sl-daftar"),MAX=30;
+  wd.innerHTML='<div class="q"><div class="qn">Soal nomor '+(soalNo+1)+' dari '+L.length+'</div><p class="qt"></p><textarea spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Tulis jawaban di sini..."></textarea><div class="btns"><button class="cek">Periksa jawaban</button><button class="kedua cth"></button><button class="kedua lihat"></button><button class="kedua lhs">Lihat hasil</button></div><div class="hasil"></div><div class="kb" hidden><div class="m">Contoh yang mirip (bukan jawabannya):</div><pre class="kunci"></pre></div><div class="kb" hidden><div class="m">Jawaban:</div><pre class="kunci"></pre></div></div>';
+  wd.querySelector(".qt").textContent=x.t;
+  const kb=wd.querySelectorAll(".kb"),kc=kb[0],kl=kb[1];kc.querySelector("pre").textContent=contoh(x.k);kl.querySelector("pre").textContent=x.k;
+  const ta=wd.querySelector("textarea"),h=wd.querySelector(".hasil"),ct=wd.querySelector(".cth"),lh=wd.querySelector(".lihat");
+  const lbl=()=>{const n=soalCoba[soalNo]||0;ct.textContent=kc.hidden?"Contoh jawaban":"Sembunyikan contoh";lh.disabled=n<MAX;lh.textContent=n<MAX?"Lihat jawaban ("+n+"/"+MAX+")":kl.hidden?"Lihat jawaban":"Sembunyikan jawaban"};
+  wd.querySelector(".cek").onclick=()=>{if(!ta.value.trim()){ta.className="";h.className="hasil info";h.textContent="Tulis jawabanmu dulu.";return}
+   soalCoba[soalNo]=(soalCoba[soalNo]||0)+1;
+   const ok=cmp(ta.value)==cmp(x.k);soalHasil[soalNo]=ok;ta.className=ok?"benar":"salah";h.className="hasil "+(ok?"benar":"salah");
+   h.innerHTML=ok?"<i>&#10004;</i><span>Benar</span>":"<i>&#10006;</i><span>Salah</span>";skor();lbl()};
+  wd.querySelector(".lhs").onclick=()=>go("hasil");ct.onclick=()=>{kc.hidden=!kc.hidden;lbl()};lh.onclick=()=>{kl.hidden=!kl.hidden;lbl()};
+  ta.value=soalIsi[soalNo]||"";ta.oninput=()=>{soalIsi[soalNo]=ta.value;ta.className="";h.className="hasil"};lbl();
+  $("sl-prev").disabled=soalNo==0;$("sl-next").disabled=soalNo==L.length-1;skor()};
+ $("sl-prev").onclick=()=>{soalNo--;tampil()};$("sl-next").onclick=()=>{soalNo++;tampil()};
+ $("sl-go").onclick=()=>{const n=parseInt($("sl-ke").value);if(n>=1&&n<=L.length){soalNo=n-1;tampil()}};
+ tampil()
+}
+function bantuan(){let s=sheet(`<h2>Bantuan / Cara pakai</h2><div class="m">Versi v${VERSI}. Ketuk judul untuk membuka.</div>`+BANTUAN.map(x=>`<details style="border-top:1px solid var(--ln);padding:8px 0"><summary style="font-weight:700;min-height:36px">${H(x.t)}</summary><div style="font-size:15px;line-height:1.5">${x.h}</div></details>`).join("")+`<button class="b" style="width:100%;margin-top:10px" id="tt">Tutup</button>`);s.querySelector("#tt").onclick=()=>s.remove()}
+function riwayat(){let s=sheet(`<h2>Riwayat versi</h2><div class="m">Setiap pembaruan menambah satu entri di sini dan nomor versi pada nama file. Sekarang: v${VERSI}.</div>`+RIWAYAT.map((x,i)=>`<details ${i==0?"open":""} style="border-top:1px solid var(--ln);padding:8px 0"><summary style="font-weight:700;min-height:36px">v${H(x.v)} &middot; ${x.d?tgl(x.d):"versi awal"} &middot; ${H(x.j)}</summary><ul>${x.f.map(f=>`<li>${H(f)}</li>`).join("")}</ul></details>`).join("")+`<button class="b" style="width:100%;margin-top:10px" id="tt">Tutup</button>`);s.querySelector("#tt").onclick=()=>s.remove()}
+function versiCard(){return `<div class="c"><div class="row"><b>Parcel Indogrosir v${VERSI}</b><span class="m">${tgl(TGL_VERSI)}</span></div><div class="m">Data terakhir ditulis oleh versi: v${H(db.versi||"-")}</div>${/^(content|file):/.test((typeof location!="undefined"&&location.protocol)||"")?`<div class="warn" style="margin-top:8px">File ini dibuka lewat ${H(location.protocol)}// . Penyimpanan data pada cara membuka ini bisa berbeda setiap kali dibuka dan tidak selalu bertahan. Tutup lalu buka lagi untuk memastikan data masih ada, dan cadangkan lebih sering.</div>`:""}<div class="g" style="margin-top:8px"><button class="b pri" onclick="bantuan()">Bantuan / Cara pakai</button><button class="b" onclick="riwayat()">Riwayat versi</button></div></div>`}
+function kunciSekarang(){role=null;closeAll();draw()}
+function ubahPin(r){let first;const bt=`<br><button class="b" onclick="go('bak')">Batal</button>`;
+ pinUI("PIN "+(r=="admin"?"admin":"user")+" baru","4 sampai 6 angka",p=>{first=p;pinUI("Ulangi PIN","",q=>{
+  if(q!=first){alert("PIN tidak sama.");go("bak");return}
+  let lain=db.auth[r=="admin"?"user":"admin"];if(lain&&hsh(q)==lain){alert("PIN admin dan user tidak boleh sama.");go("bak");return}
+  db.auth[r]=hsh(q);chg();go("bak");alert("PIN berhasil disimpan.")},bt)},bt);
+}
+function hapusPinUser(){if(confirm("Hapus PIN user? User tidak bisa masuk sampai admin membuat PIN baru.")){db.auth.user=null;chg()}}
+if(document.addEventListener){["click","touchstart","keydown"].forEach(e=>document.addEventListener(e,()=>{lastAct=Date.now()}));setInterval(()=>{if(role&&Date.now()-lastAct>180000){role=null;closeAll();draw()}},10000)}
+/* ---------- form modal ---------- */
+function openForm(title,fields,cb){
+ let o=document.createElement("div");o.className="ov";
+ o.innerHTML=`<div><h2>${H(title)}</h2>${fields.map((f,i)=>`<label class="m">${f.l}</label><input id="f${i}" ${f.pw?'type="password" autocomplete="off" ':""}${f.up?'class="up" autocapitalize="characters" ':""}${f.t=="text"?"":'inputmode="numeric"'} value="${f.v!=null?(f.t=="rp"?Number(f.v).toLocaleString("id-ID"):H(f.v)):""}">`).join("")}<button class="b pri" id="ok">Simpan</button><button class="b" style="width:100%;margin-top:8px" id="no">Batal</button></div>`;
+ document.body.appendChild(o);
+ fields.forEach((f,i)=>{let e=o.querySelector("#f"+i);if(f.up)e.oninput=()=>{let p=e.selectionStart;e.value=e.value.toUpperCase();try{e.setSelectionRange(p,p)}catch(x){}};if(f.t=="rp")e.oninput=()=>{let n=e.value.replace(/\D/g,"");e.value=n?Number(n).toLocaleString("id-ID"):""}});
+ o.querySelector("#no").onclick=()=>o.remove();
+ try{if(fields[0]&&fields[0].up){let e=o.querySelector("#f0");e.focus();e.setSelectionRange(e.value.length,e.value.length)}}catch(x){}
+ o.querySelector("#ok").onclick=()=>{let bad=fields.findIndex((f,i)=>{let t=o.querySelector("#f"+i).value.trim();return f.t=="num"&&/[.,]/.test(t)&&!/^\d{1,3}([.,]\d{3})+$/.test(t)});if(bad>=0){alert("Isi angka bulat tanpa koma atau titik desimal: "+String(fields[bad].l).split(".")[0]);return}let v=fields.map((f,i)=>{let s=o.querySelector("#f"+i).value;return f.t=="text"?(f.up?s.trim().replace(/\s+/g," ").toUpperCase():s.trim()):Number(s.replace(/\D/g,""))||0});if(cb(v)!==false)o.remove()};
+}
+function sheet(html){let o=document.createElement("div");o.className="ov";o.innerHTML=`<div>${html}</div>`;o.onclick=e=>{if(e.target==o)o.remove()};document.body.appendChild(o);return o}
+function closeAll(){document.querySelectorAll(".ov").forEach(e=>e.remove())}
+/* ---------- master ---------- */
+const gp=(k,d)=>{let v=(db.pref||{})[k];return v==null||v===""?d:v};
+const mo={},MD={ubar:1,upar:1,toko:0,sup:0,bar:1,rb:0,par:0,pb:0,set:0,dat:0};let mq={b:"",p:"",pb:""},mf={so:"az",tp:0};
+const dm=(k,t,n,b)=>`<details ${(mo[k]==null?MD[k]:mo[k])?"open":""} ontoggle="mo.${k}=this.open"><summary>${t}${n!=null?" ("+n+")":""}</summary>${b}</details>`;
+const ql=(a,q)=>{if(!q)return true;let t=String(a).toLowerCase();return q.trim().toLowerCase().split(/\s+/).every(w=>t.includes(w))};
+const tipis=b=>(b.stok||0)<(b.min==null?5:b.min);
+const rfl=id=>{let e=document.getElementById(id);if(e)e.innerHTML=LS[id]()};
+function ml(b,d,ket){db.mut=db.mut||[];db.mut.push({t:iso(0),b:b.id,d,ket});if(db.mut.length>2000)db.mut=db.mut.slice(-2000)}
+const kbR=b=>`<details class="c" ${mo["b"+b.id]?"open":""} ontoggle="mo['b${b.id}']=this.open"><summary style="cursor:pointer;display:flex;justify-content:space-between;gap:8px"><b>${H(b.nama)}</b><span style="color:${tipis(b)?"var(--bad)":"inherit"}">Stok ${(b.stok||0).toLocaleString("id-ID")} | ${rp(modal(b))}</span></summary>${kartuBarang(b).replace('<div class="c">',"<div>")}</details>`;
+function listB(){return db.barang.filter(b=>ql(b.nama,mq.b)&&(!mf.tp||tipis(b))).sort((a,b)=>mf.so=="tipis"?(tipis(b)-tipis(a))||a.nama.localeCompare(b.nama):mf.so=="mrh"?modal(a)-modal(b):a.nama.localeCompare(b.nama)).map(kbR).join("")||'<div class="m">Tidak ada barang yang cocok.</div>'}
+function listP(){let mt=gp("mt",30);return db.parcel.filter(p=>ql(p.nama,mq.p)).map(p=>{let m=modalParcel(p),sar=Math.ceil(m/(1-mt/100)/500)*500;
+ return `<div class="c" style="${p.nonaktif?"opacity:.6":""}"><div class="row"><b>${H(p.nama)}${p.nonaktif?' <span class="m">(nonaktif)</span>':""}</b><span>${rp(p.harga)}</span></div>${okImg(p.foto)?`<img src="${p.foto}" style="max-height:70px;border-radius:8px;margin:4px 0">`:""}<div class="m">${p.isi.map(i=>{let b=db.barang.find(x=>x.id==i.b);return (b?H(b.nama):"?")+" x"+i.q}).join(", ")||"Isi belum dipilih"}</div>${p.cat?`<div class="m">Catatan: ${H(p.cat)}</div>`:""}<div class="m">Stok cukup untuk ${bisaN(p)} paket</div><div class="m">Modal ${rp(m)} | Untung ${rp(p.harga-m)}${p.harga?` (${Math.round((p.harga-m)/p.harga*100)}%)`:""}</div>${mt>0?`<div class="m">Saran harga untuk margin ${mt}%: <b>${rp(sar)}</b></div>`:""}${p.kem&&p.kem.length?`<div class="m">Kemasan ${rp(p.kemasan||0)}: ${p.kem.map(k=>H(k.n)).join(", ")}</div>`:""}${p.upd?`<div class="m">Diubah ${tgl(p.upd)}</div>`:""}<div class="g" style="margin-top:6px"><button class="b" onclick="eParcel('${p.id}')">Ubah</button><button class="b" onclick="salinP('${p.id}')">Salin</button><button class="b" onclick="kemP('${p.id}')">Kemasan</button><button class="b" onclick="fotoP('${p.id}')">Foto</button><button class="b" onclick="catP('${p.id}')">Catatan</button><button class="b" onclick="aktifP('${p.id}')">${p.nonaktif?"Aktifkan":"Nonaktifkan"}</button><button class="b bad" onclick="hapusParcel('${p.id}')">Hapus</button></div></div>`}).join("")||'<div class="m">Tidak ada parcel yang cocok.</div>'}
+function listPb(){return db.pembeli.filter(p=>ql(p.nama+" "+(p.hp||""),mq.pb)).map(p=>`<div class="c"><div class="row" style="align-items:center"><span><b>${H(p.nama)}</b>${p.arsip?' <span class="m">(arsip)</span>':""}<br><span class="m">${H(p.hp||"")}${p.alamat?" | "+H(p.alamat):""}</span></span><span class="g"><button class="b" onclick="ubahPembeli('${p.id}')">Ubah</button><button class="b" onclick="arsipPb('${p.id}')">${p.arsip?"Aktifkan":"Arsipkan"}</button><button class="b bad" onclick="hapusPembeli('${p.id}')">Hapus</button></span></div></div>`).join("")||'<div class="m">Tidak ada pembeli yang cocok.</div>'}
+const listBU=()=>db.barang.filter(b=>ql(b.nama,mq.b)).sort((a,b)=>a.nama.localeCompare(b.nama)).map(b=>`<div class="row"><span>${H(b.nama)}</span><b style="color:${tipis(b)?"var(--bad)":"inherit"}">${(b.stok||0).toLocaleString("id-ID")} pcs</b></div>`).join("")||'<div class="m">Tidak ada.</div>';
+const bt=p=>{let m=null,nm="";p.isi.forEach(i=>{let v=Math.floor(stok(i.b)/i.q);if(m==null||v<m){m=v;nm=nmB(i.b)}});return nm};
+const listPU=()=>db.parcel.filter(p=>!p.nonaktif&&ql(p.nama,mq.p)).map(p=>`<div class="row"><span>${H(p.nama)}<br><span class="m">${bisaN(p)} paket tersedia${bt(p)?" (paling terbatas: "+bt(p)+")":""}</span></span><b>${rp(p.harga)}</b></div>`).join("")||'<div class="m">Tidak ada.</div>';
+const LS={lb:listB,lp:listP,lpb:listPb,lbu:listBU,lpu:listPU};
+function vMstU(){return peringatan()+`<div class="m" style="margin-bottom:8px">Tampilan baca saja.</div>`+dm("ubar","Stok barang",db.barang.length,`<input placeholder="Cari barang" value="${H(mq.b)}" oninput="mq.b=this.value;rfl('lbu')"><div class="c" id="lbu">${listBU()}</div>`)+dm("upar","Parcel dan jumlah yang bisa dibuat",db.parcel.filter(p=>!p.nonaktif).length,`<input placeholder="Cari parcel, misalnya Ramadhan 3" value="${H(mq.p)}" oninput="mq.p=this.value;rfl('lpu')"><div class="c" id="lpu">${listPU()}</div>`)}
+function vMst(){
+ if(role!="admin")return vMstU();
+ const I=(k,pl)=>`<input placeholder="${pl}" value="${H(mq[k])}" oninput="mq.${k}=this.value;rfl('l${k}')">`,
+ B=(a,k,f)=>a.map(([v,l])=>`<button class="b ${mf[k]==v?"on":""}" onclick="mf.${k}='${v}';draw()">${l}</button>`).join("");
+ return peringatan()+dm("toko","Toko",null,`<div class="c"><b>${H(db.toko.nama)||"Belum diisi"}</b><div class="m">${H(db.toko.hp)}${db.toko.alamat?" | "+H(db.toko.alamat):""}</div><div class="m">${db.toko.logo?"Logo terpasang":"Belum ada logo"}${db.toko.foot?" | Catatan kaki: "+H(db.toko.foot):""}</div><div class="g"><button class="b" onclick="eToko()">Ubah toko</button><button class="b" onclick="eLogo()">Logo</button></div></div>`)+
+ dm("sup","Supplier",db.supplier.length,db.supplier.map(x=>`<div class="c"><div class="row" style="align-items:center"><b>${H(x.nama)}</b><span class="g"><button class="b" onclick="ubahSupplier('${x.id}')">Ubah</button><button class="b bad" onclick="hapusSupplier('${x.id}')">Hapus</button></span></div></div>`).join("")+`<button class="b pri" onclick="eSupplier()">+ Supplier</button>`)+
+ dm("bar","Barang",db.barang.length,I("b","Cari barang")+`<div class="g" style="margin:6px 0">${B([["az","A-Z"],["tipis","Menipis dulu"],["mrh","Modal termurah"]],"so")}<button class="b ${mf.tp?"on":""}" onclick="mf.tp=mf.tp?0:1;draw()">Hanya menipis</button></div><div id="lb">${listB()}</div><div class="g"><button class="b pri" onclick="eBarang()">+ Barang</button><button class="b" onclick="opAll()">Opname semua</button></div>`)+
+ dm("rb","Riwayat belanja",db.belanja.length,`<div class="c">${db.belanja.slice(-5).reverse().map(x=>`<div class="row m"><span>${tgl(x.tgl)} ${H(x.barang)} (${H(x.sup)})</span><span>${x.jml} ${x.jenis} = ${rp(x.biaya)} ${bbtn(x)}</span></div>`).join("")||'<div class="m">Belum ada belanja tercatat.</div>'}</div><button class="b" onclick="rwB()">Lihat semua</button>`)+
+ dm("par","Parcel",db.parcel.length,I("p","Cari parcel")+`<div id="lp">${listP()}</div><button class="b pri" onclick="eParcel()">+ Parcel</button>`)+
+ dm("pb","Pembeli",db.pembeli.length,I("pb","Cari pembeli")+`<div id="lpb">${listPb()}</div><button class="b pri" onclick="ePembeli()">+ Pembeli</button>`)+
+ dm("set","Pengaturan",null,`<div class="c"><div class="m">DP minimal ${gp("dp",50)}% | ${gp("mt",30)>0?"Margin target "+gp("mt",30)+"%":"Saran harga mati"} | Belum lunas ditandai setelah ${gp("jt",7)} hari | Peringatan ambil ${gp("jh",2)} hari sebelumnya | Ongkir ${gp("og",0)>0?rp(gp("og",0))+(gp("gr",0)>0?", gratis mulai "+gp("gr",0)+" parcel":""):"tidak dipakai"} | Awalan nota ${H(gp("awal","INV"))} | Cetak ${gp("lebar","a4")=="a4"?"A4":gp("lebar","a4")+"mm"}</div><button class="b" style="margin-top:8px" onclick="ePref()">Ubah pengaturan</button><div class="row" style="align-items:center;margin-top:8px"><span>Rata-rata per transaksi di Rekap</span><button class="b" onclick="togRata()">${(db.pref||{}).rata?"Tampil":"Disembunyikan"}</button></div>${ukuranHtml()}</div>`)+
+ dm("dat","Impor dan ekspor",null,`<div class="c"><div class="g"><button class="b" onclick="impor('b')">Impor barang (CSV)</button><button class="b" onclick="impor('p')">Impor pembeli (CSV)</button></div><div class="g" style="margin-top:8px"><button class="b" onclick="eksM('b')">Ekspor barang</button><button class="b" onclick="eksM('p')">Ekspor pembeli</button></div></div>`);
+}
+const nPar=q=>Object.values(q||{}).reduce((s,v)=>s+v,0);
+const ongAuto=n=>{let og=gp("og",0),gr=gp("gr",0);return og<=0?0:(gr>0&&n>=gr?0:og)};
+const ongTx=()=>tx.kirim?(tx.ong!=null?tx.ong:ongAuto(nPar(tx.q))):0;
+function eOng(){openForm("Ongkos kirim",[{l:"Ongkos kirim (Rp). Isi 0 untuk gratis",t:"rp",v:ongTx()}],v=>{tx.ong=v[0];tx.dp=0;draw()})}
+const sisaBuat=o=>o.items.reduce((s,i)=>s+Math.max(0,i.q-(i.dibuat||0)),0);
+function buat(oid,k,d){let i=db.orders.find(x=>x.id==oid).items[k];i.dibuat=Math.min(i.q,Math.max(0,(i.dibuat||0)+d));chg()}
+function buatSemua(oid){db.orders.find(x=>x.id==oid).items.forEach(i=>i.dibuat=i.q);chg()}
+const needB=i=>i.isi&&i.isi.length&&i.isi[0].b?i.isi:((db.parcel.find(x=>x.id==i.pid||x.nama==i.nama)||{}).isi||[]).map(c=>({b:c.b,q:c.q}));
+const rsv=id=>{let t=0;db.orders.forEach(o=>{if(o.diambil)return;o.items.forEach(i=>{let r=i.q-(i.dibuat||0);if(r>0)needB(i).forEach(c=>{if(c.b==id)t+=c.q*r})})});return t};
+const stBuat=o=>{let tot=o.items.reduce((s,i)=>s+i.q,0),d=tot-sisaBuat(o);return d<=0?["Belum dibuat","var(--bad)",d,tot]:d<tot?["Sedang dibuat","#b7791f",d,tot]:["Selesai dibuat","var(--ac)",d,tot]};
+function siapO(oid){let o=db.orders.find(x=>x.id==oid),pb=db.pembeli.find(x=>x.id==o.pembeli)||{nama:"?"},T={},S={},pr=[];
+ o.items.forEach(i=>{let r=Math.max(0,i.q-(i.dibuat||0)),nb=needB(i);pr.push({i,r,nb});nb.forEach(c=>{T[c.b]=(T[c.b]||0)+c.q*i.q;S[c.b]=(S[c.b]||0)+c.q*r})});
+ const fmt=(b,q)=>{let ik=b.isi||1;return ik>1&&q>=ik?q+" pcs ("+Math.floor(q/ik)+" "+(b.sat||"karton")+(q%ik?" + "+q%ik+" pcs":"")+")":q+" pcs"};
+ let L=Object.keys(T).map(id=>{let b=db.barang.find(x=>x.id==id);return b?{b,s:S[id]}:null}).filter(Boolean).sort((a,b)=>a.b.nama.localeCompare(b.b.nama)),
+ s=sheet(`<h2>Siapkan barang: ${H(pb.nama)}</h2><div class="m">${o.items.map(i=>H(i.nama)+" x"+i.q+" (dibuat "+(i.dibuat||0)+")").join(", ")}</div><div class="c" style="margin-top:8px"><b>Total yang harus disiapkan (parcel belum dibuat)</b>${L.filter(x=>x.s>0).map(x=>`<div class="row"><span>${H(x.b.nama)}</span><b>${fmt(x.b,x.s)}</b></div>`).join("")||'<div class="m">Semua parcel di pesanan ini sudah dibuat.</div>'}</div><div class="c"><b>Per parcel</b>${pr.map(p=>`<div class="m" style="margin-top:6px"><b>${H(p.i.nama)}</b> x${p.i.q} (belum dibuat ${p.r})</div>${p.nb.map(c=>{let b=db.barang.find(x=>x.id==c.b);return b?`<div class="row m"><span>${H(b.nama)}</span><span>${c.q} per parcel, total ${c.q*p.i.q}</span></div>`:""}).join("")||'<div class="m">Isi parcel belum diatur.</div>'}`).join("")}</div><div class="m">Stok sudah disisihkan saat pesanan dicatat, jadi barang ini pasti cukup.</div><div class="g" style="margin-top:8px"><button class="b" id="wa">Kirim daftar lewat WhatsApp</button><button class="b" id="tt">Tutup</button></div>`);
+ s.querySelector("#tt").onclick=()=>s.remove();
+ s.querySelector("#wa").onclick=()=>window.open("https://wa.me/?text="+encodeURIComponent("Siapkan barang untuk "+pb.nama+":\n"+L.filter(x=>x.s>0).map(x=>"- "+x.b.nama+": "+fmt(x.b,x.s)).join("\n")),"_blank")}
+const bbtn=x=>x.bid&&(db.belanja.filter(y=>y.bid==x.bid).pop()||{}).id==x.id?`<button class="b" style="min-height:30px;padding:2px 8px" onclick="batalBeli('${x.id}')">Batalkan</button>`:"";
+function batalBeli(id){let x=db.belanja.find(y=>y.id==id),b=x&&db.barang.find(z=>z.id==x.bid);
+ if(!x||!b)return alert("Belanja ini tidak bisa dibatalkan otomatis. Koreksi lewat Ubah barang.");
+ if(db.belanja.filter(y=>y.bid==x.bid).pop().id!=id)return alert("Hanya belanja terakhir untuk barang ini yang bisa dibatalkan. Batalkan yang lebih baru dulu.");
+ if((b.stok||0)<x.pcs)return alert("Tidak bisa dibatalkan: stok sekarang "+(b.stok||0)+" pcs, kurang dari jumlah belanja ("+x.pcs+" pcs). Artinya sebagian sudah terpakai.");
+ if(Math.round(modal(b))!=Math.round(x.m1))return alert("Tidak bisa dibatalkan: modal barang sudah diubah manual setelah belanja ini.");
+ if(!confirm("Batalkan belanja "+tgl(x.tgl)+" "+x.barang+" ("+x.pcs+" pcs, "+rp(x.biaya)+")?\nStok berkurang "+x.pcs+" pcs dan modal kembali ke "+rp(x.m0)+" per pcs."))return;
+ b.stok-=x.pcs;b.modal=x.m0;b.upd=iso(0);ml(b,-x.pcs,"Batal belanja "+x.sup);db.belanja=db.belanja.filter(y=>y.id!=id);chg()}
+function opHitung(R){let L=[];for(let [id,v] of R){v=String(v).trim();if(v==="")continue;let b=db.barang.find(x=>x.id==id);if(!b||!/^\d+$/.test(v))return{err:"Isian "+(b?b.nama:"?")+" harus angka bulat 0 atau lebih."};let n=Number(v),rv=rsv(id),rak=(b.stok||0)+rv,d=n-rak;if(n<rv)return{err:b.nama+": stok fisik "+n+" kurang dari kebutuhan pesanan belum dibuat ("+rv+")."};if(d)L.push({b,n,d,ns:n-rv,rak})}return{L}}
+function opAll(){let s=sheet("");
+ s.firstChild.innerHTML=`<h2>Opname semua barang</h2><div class="m">Isi stok fisik (pcs). Baris yang dikosongkan tidak diubah.</div><input id="oa" placeholder="Alasan atau catatan (opsional)">${db.barang.slice().sort((a,b)=>a.nama.localeCompare(b.nama)).map(b=>`<div class="row" style="align-items:center;gap:8px"><span>${H(b.nama)}<br><span class="m">Di aplikasi: ${(b.stok||0)+rsv(b.id)}</span></span><input data-i="${b.id}" inputmode="numeric" placeholder="fisik" style="width:90px;margin:0"></div>`).join("")||'<div class="m">Belum ada barang.</div>'}<div class="g" style="margin-top:8px"><button class="b pri" id="ok">Periksa dan terapkan</button><button class="b" id="tt">Tutup</button></div>`;
+ s.querySelector("#tt").onclick=()=>s.remove();
+ s.querySelector("#ok").onclick=()=>{let r=opHitung([...s.querySelectorAll("[data-i]")].map(e=>[e.dataset.i,e.value]));if(r.err)return alert(r.err);if(!r.L.length)return alert("Tidak ada selisih.");
+  let al=s.querySelector("#oa").value.trim();
+  if(!confirm("Sesuaikan stok "+r.L.length+" barang?\n"+r.L.slice(0,12).map(x=>x.b.nama+": "+x.rak+" jadi "+x.n+" ("+(x.d>0?"+":"")+x.d+")").join("\n")+(r.L.length>12?"\n...dan "+(r.L.length-12)+" lainnya":"")))return;
+  r.L.forEach(x=>{ml(x.b,x.d,"Opname"+(al?": "+al:""));x.b.stok=x.ns;x.b.upd=iso(0)});s.remove();chg()}}
+function ukuranHtml(){let kb=Math.round(JSON.stringify(db).length/1024),pf=db.parcel.filter(p=>p.foto),fk=Math.round(pf.reduce((s,p)=>s+p.foto.length,0)/1024),pc=Math.round(kb/5120*100);
+ return `<div class="m" style="margin-top:8px">Ukuran data: <b style="color:${pc>80?"var(--bad)":"inherit"}">${kb.toLocaleString("id-ID")} KB</b> (sekitar ${pc}% dari batas penyimpanan peramban 5 MB). Foto parcel: ${pf.length} foto, ${fk} KB.${pc>80?" Hampir penuh, cadangkan data dan kurangi foto.":""}</div>${pf.length?'<button class="b bad" style="margin-top:6px" onclick="hapusFoto()">Hapus semua foto parcel</button>':""}`}
+function hapusFoto(){if(!confirm("Hapus semua foto parcel? Nama, harga, dan isi parcel tidak berubah."))return;db.parcel.forEach(p=>delete p.foto);chg()}
+function ePref(){openForm("Pengaturan",[{l:"DP minimal (% dari total)",t:"num",v:gp("dp",50)},{l:"Margin target untuk saran harga (%). Isi 0 kalau tidak dipakai",t:"num",v:gp("mt",30)},{l:"Nota belum lunas ditandai setelah (hari)",t:"num",v:gp("jt",7)},{l:"Peringatan sebelum tanggal ambil (hari)",t:"num",v:gp("jh",2)},{l:"Awalan nomor nota (huruf/angka, maks 6)",t:"text",v:gp("awal","INV")},{l:"Ukuran cetak nota (a4, 58, atau 80)",t:"text",v:gp("lebar","a4")},{l:"Ongkos kirim standar (Rp). 0 = tidak memakai ongkir",t:"rp",v:gp("og",0)},{l:"Gratis ongkir mulai (jumlah parcel). 0 = tidak ada gratis",t:"num",v:gp("gr",0)}],v=>{
+ let aw=String(v[4]||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6),lb=String(v[5]).trim().toLowerCase();
+ if(v[0]<10||v[0]>100||v[1]<0||v[1]>=90||v[2]<1||v[3]<0||!aw||!["a4","58","80"].includes(lb)||v[6]<0||v[7]<0){alert("Isian belum benar: DP 10-100, margin 0-89 (0 = saran harga mati), hari jatuh tempo minimal 1, awalan wajib diisi, ukuran a4/58/80.");return false}
+ db.pref=Object.assign(db.pref||{},{dp:v[0],mt:v[1],jt:v[2],jh:v[3],awal:aw,lebar:lb,og:v[6],gr:v[7]});lg("Ubah pengaturan");chg()})}
+function cetakNota(x){let l=x?"a4":gp("lebar","a4"),st=document.getElementById("pgs");if(!st){st=document.createElement("style");st.id="pgs";document.head.appendChild(st)}
+ st.textContent=l=="a4"?"":`@media print{@page{size:${l}mm 297mm;margin:2mm}.nota{width:${l-6}mm;font-size:${l==58?11:12}px}}`;window.print()}
+function rwB(){let s=sheet(`<h2>Riwayat belanja</h2><input id="rq" placeholder="Cari barang atau supplier"><div id="rl"></div><button class="b" id="tt" style="width:100%;margin-top:8px">Tutup</button>`);
+ const f=()=>{let L=db.belanja.slice().reverse().filter(x=>ql(x.barang+" "+x.sup,s.querySelector("#rq").value));s.querySelector("#rl").innerHTML=L.slice(0,100).map(x=>`<div class="row m"><span>${tgl(x.tgl)} ${H(x.barang)} (${H(x.sup)})</span><span>${x.jml} ${x.jenis} = ${rp(x.biaya)} ${bbtn(x)}</span></div>`).join("")+(L.length>100?'<div class="m">Menampilkan 100 terbaru.</div>':"")||'<div class="m">Tidak ada.</div>'};
+ rfh=()=>{if(!document.body.contains(s)){rfh=null;return}f()};s.querySelector("#rq").oninput=f;s.querySelector("#tt").onclick=()=>s.remove();f()}
+function salinB(id){let b=db.barang.find(x=>x.id==id);openForm("Salin barang",[{l:"Nama barang baru",t:"text",v:b.nama+" (salin)"}],v=>{if(!v[0])return false;let c=JSON.parse(JSON.stringify(b));Object.assign(c,{id:uid(),nama:v[0],stok:0,upd:iso(0)});c.harga=(c.harga||[]).map(h=>Object.assign(h,{id:uid()}));db.barang.push(c);chg()})}
+function opname(id){let b=db.barang.find(x=>x.id==id),rv=rsv(id),rak=(b.stok||0)+rv;openForm("Stok opname "+b.nama,[{l:"Stok fisik di rak sekarang (pcs). Di aplikasi: "+rak+(rv?" (stok bebas "+(b.stok||0)+" + dipesan belum dibuat "+rv+")":""),t:"num",v:rak},{l:"Alasan (opsional)",t:"text"}],v=>{let d=v[0]-rak;if(!d){alert("Tidak ada selisih.");return false}if(v[0]<rv){alert("Stok fisik ("+v[0]+") kurang dari kebutuhan pesanan yang belum dibuat ("+rv+"). Cek pesanan atau hitungan fisiknya.");return false}if(!confirm("Stok di rak "+rak+" menjadi "+v[0]+" ("+(d>0?"+":"")+d+")?"))return;ml(b,d,"Opname"+(v[1]?": "+v[1]:""));b.stok=v[0]-rv;b.upd=iso(0);chg()})}
+function rusak(id){let b=db.barang.find(x=>x.id==id);openForm("Rusak/kedaluwarsa: "+b.nama,[{l:"Jumlah (pcs)",t:"num"},{l:"Alasan (rusak, kedaluwarsa, hilang)",t:"text",v:"rusak"}],v=>{if(v[0]<=0||v[0]>(b.stok||0)){alert("Jumlah harus lebih dari 0 dan tidak melebihi stok.");return false}ml(b,-v[0],"Rusak: "+(v[1]||"-"));b.stok-=v[0];b.upd=iso(0);chg()})}
+function rwS(id){let b=db.barang.find(x=>x.id==id),L=(db.mut||[]).filter(m=>m.b==id).reverse(),s=sheet(`<h2>Riwayat stok ${H(b.nama)}</h2>${L.slice(0,100).map(m=>`<div class="row m"><span>${tgl(m.t)} ${H(m.ket)}</span><b style="color:${m.d<0?"var(--bad)":"var(--ac)"}">${m.d>0?"+":""}${m.d}</b></div>`).join("")||'<div class="m">Belum ada catatan. Perubahan stok dicatat sejak versi ini.</div>'}<button class="b" id="tt" style="width:100%;margin-top:8px">Tutup</button>`);s.querySelector("#tt").onclick=()=>s.remove()}
+function salinP(id){let p=db.parcel.find(x=>x.id==id),c=JSON.parse(JSON.stringify(p));c.id=uid();c.nama=p.nama+" (salin)";c.upd=iso(0);db.parcel.push(c);chg()}
+function kemP(id){let p=db.parcel.find(x=>x.id==id),K=(p.kem||[]).slice(),T=()=>K.reduce((a,k)=>a+k.h,0);if(T()!=(p.kemasan||0))K=p.kemasan?[{n:"Kemasan",h:p.kemasan}]:[];
+ let s=sheet("");const sh=()=>{s.firstChild.innerHTML=`<h2>Kemasan ${H(p.nama)}</h2>${K.map((k,i)=>`<div class="row"><span>${H(k.n)}</span><span>${rp(k.h)} <button class="b" data-x="${i}" style="min-height:30px;padding:2px 8px">x</button></span></div>`).join("")||'<div class="m">Belum ada komponen kemasan.</div>'}<div class="row"><b>Total</b><b>${rp(T())}</b></div><div class="g" style="margin-top:8px"><button class="b" id="ad">+ Komponen</button><button class="b pri" id="ok">Simpan</button></div>`;
+  s.querySelectorAll("[data-x]").forEach(e=>e.onclick=()=>{K.splice(+e.dataset.x,1);sh()});
+  s.querySelector("#ad").onclick=()=>openForm("Komponen kemasan",[{l:"Nama (misalnya kardus, pita)",t:"text"},{l:"Biaya (Rp)",t:"rp"}],v=>{if(!v[0])return false;K.push({n:v[0],h:v[1]||0});sh()});
+  s.querySelector("#ok").onclick=()=>{s.remove();p.kem=K;p.kemasan=T();p.upd=iso(0);chg()}};sh()}
+function imgKecil(f,mx,cb,q){let im=new Image,u=URL.createObjectURL(f);im.onload=()=>{let k=Math.min(1,mx/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);cb(c.toDataURL("image/jpeg",q||.7))};im.onerror=()=>alert("Gambar tidak bisa dibaca");im.src=u}
+function fotoP(id){let p=db.parcel.find(x=>x.id==id),s=sheet(`<h2>Foto ${H(p.nama)}</h2><input type="file" accept="image/*" id="fi">${p.foto?'<button class="b bad" id="fh" style="width:100%">Hapus foto</button>':""}`);
+ s.querySelector("#fi").onchange=e=>{let f=e.target.files[0];if(f)imgKecil(f,120,d=>{if(JSON.stringify(db).length+d.length>4200000){alert("Penyimpanan hampir penuh, foto tidak ditambahkan. Cadangkan data dulu atau hapus foto lain di Pengaturan.");return}p.foto=d;p.upd=iso(0);s.remove();chg()},.6)};let h=s.querySelector("#fh");if(h)h.onclick=()=>{delete p.foto;s.remove();chg()}}
+function catP(id){let p=db.parcel.find(x=>x.id==id);openForm("Catatan parcel",[{l:"Deskripsi singkat",t:"text",v:p.cat||""}],v=>{p.cat=v[0];chg()})}
+function aktifP(id){let p=db.parcel.find(x=>x.id==id);p.nonaktif=p.nonaktif?0:1;if(p.nonaktif&&tx&&tx.q)delete tx.q[id];chg()}
+function csvParse(t){let l=t.split("\n")[0],d=l.split(";").length>l.split(",").length?";":",",R=[],r=[],c="",q=0;
+ for(let i=0;i<t.length;i++){let h=t[i];if(q){if(h=='"'){if(t[i+1]=='"'){c+='"';i++}else q=0}else c+=h}else if(h=='"')q=1;else if(h==d){r.push(c);c=""}else if(h=="\n"||h=="\r"){if(h=="\r"&&t[i+1]=="\n")i++;r.push(c);c="";if(r.some(x=>x.trim()))R.push(r);r=[]}else c+=h}
+ r.push(c);if(r.some(x=>x.trim()))R.push(r);return R}
+function impor(j){let k=j=="b",s=sheet(`<h2>Impor ${k?"barang":"pembeli"} dari CSV</h2><div class="m">Kolom berurutan: ${k?"nama, isi per karton, stok, batas peringatan, modal per pcs":"nama, HP, alamat, catatan"}. Baris judul boleh ada. Nama yang sudah ada dilewati.</div><input type="file" accept=".csv,text/csv,text/plain" id="cf"><button class="b" id="tt" style="width:100%;margin-top:8px">Tutup</button>`);
+ s.querySelector("#tt").onclick=()=>s.remove();
+ s.querySelector("#cf").onchange=e=>{let f=e.target.files[0];if(!f)return;let fr=new FileReader;fr.onload=()=>{let R=csvParse(String(fr.result).replace(/^\ufeff/,""));if(R.length&&/^nama/i.test(R[0][0].trim()))R.shift();
+  let ada=new Set((k?db.barang:db.pembeli).map(x=>nz(x.nama))),A=[],lw=0,gg=[];
+  R.forEach(r=>{let n=(r[0]||"").trim();if(!k)n=n.toUpperCase();if(!n||ada.has(nz(n))){lw++;return}if(k){let isi=nID(r[1]),st=nID(r[2]),mn=(r[3]||"").trim()===""?5:nID(r[3]),md=(r[4]||"").trim()===""?0:nID(r[4]);
+   if(!bl(isi)||isi<1||!bl(st)||st>1e6||!bl(mn)||isNaN(md)||md<0||md>1e7){gg.push(n);return}
+   ada.add(nz(n));A.push({id:uid(),nama:n,isi,stok:st,min:mn,modal:md,harga:[],upd:iso(0)})}
+  else{ada.add(nz(n));A.push({id:uid(),nama:n,hp:(r[1]||"").trim(),alamat:(r[2]||"").trim(),cat:(r[3]||"").trim()})}});
+  if(!A.length){alert("Tidak ada baris baru yang bisa diimpor ("+lw+" dilewati"+(gg.length?", "+gg.length+" ditolak karena angka tidak valid: "+gg.slice(0,3).join(", "):"")+").");return}
+  if(!confirm("Tambahkan "+A.length+" "+(k?"barang":"pembeli")+"? ("+lw+" dilewati karena kosong atau nama sudah ada"+(gg.length?"; "+gg.length+" ditolak karena angka tidak valid: "+gg.slice(0,3).join(", "):"")+")"+(k?"\n\nContoh hasil baca: "+A.slice(0,3).map(x=>x.nama+" isi "+x.isi+", stok "+x.stok+", modal "+rp(x.modal)).join("; ")+(A.some(x=>!x.modal)?"\n\nPERHATIAN: "+A.filter(x=>!x.modal).length+" barang bermodal Rp0 (untung akan tampak palsu).":""):"")))return;
+  A.forEach(x=>{(k?db.barang:db.pembeli).push(x);if(k&&x.stok)ml(x,x.stok,"Stok awal (impor)")});lg("Impor "+A.length+(k?" barang":" pembeli")+" dari CSV");s.remove();chg()};fr.readAsText(f)}}
+function eksM(j){dlCsv(j=="b"?[["Nama","Isi per satuan besar","Satuan","Stok (pcs)","Batas peringatan","Modal per pcs","Diubah"]].concat(db.barang.map(b=>[b.nama,b.isi||1,b.sat||"karton",b.stok||0,b.min==null?5:b.min,Math.round(modal(b)),b.upd||""])):[["Nama","HP","Alamat","Catatan","Status"]].concat(db.pembeli.map(p=>[p.nama,p.hp||"",p.alamat||"",p.cat||"",p.arsip?"Arsip":"Aktif"])),(j=="b"?"barang":"pembeli")+".csv")}
+function togRata(){db.pref=db.pref||{};db.pref.rata=db.pref.rata?0:1;chg()}
+function eToko(){openForm("Toko",[{l:"Nama toko",t:"text",v:db.toko.nama},{l:"Nomor HP penjual",t:"text",v:db.toko.hp},{l:"Alamat (opsional, tampil di nota)",t:"text",v:db.toko.alamat||""},{l:"Catatan kaki nota (opsional)",t:"text",v:db.toko.foot||""}],v=>{db.toko=Object.assign({},db.toko,{nama:v[0],hp:v[1],alamat:v[2],foot:v[3]});chg()})}
+function eLogo(){let s=sheet(`<h2>Logo toko</h2><div class="m">Pilih gambar, otomatis dikecilkan.</div><input type="file" accept="image/*" id="lg">${db.toko.logo?'<button class="b bad" id="lh" style="width:100%">Hapus logo</button>':""}`);
+ s.querySelector("#lg").onchange=e=>{let f=e.target.files[0];if(!f)return;let im=new Image,u=URL.createObjectURL(f);im.onload=()=>{let k=Math.min(1,120/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);db.toko.logo=c.toDataURL("image/png");s.remove();chg()};im.onerror=()=>alert("Gambar tidak bisa dibaca");im.src=u};
+ let h=s.querySelector("#lh");if(h)h.onclick=()=>{delete db.toko.logo;s.remove();chg()}}
+function eBarang(id){let b=db.barang.find(x=>x.id==id)||{};openForm("Barang",[{l:"Nama barang",t:"text",v:b.nama},{l:"Isi per satuan besar (pcs)",t:"num",v:b.isi||1},{l:b.id?"Stok sekarang (pcs)":"Stok awal (pcs)",t:"num",v:b.stok||0},{l:"Beri peringatan kalau stok di bawah (pcs)",t:"num",v:b.min==null?5:b.min},{l:"Modal per pcs (berubah otomatis saat Tambah stok)",t:"rp",v:b.id?Math.round(modal(b)):0},{l:"Nama satuan besar (karton, lusin, pak, dus)",t:"text",v:b.sat||"karton"}],v=>{
+ if(!v[0])return false;let sat=(v[5]||"karton").trim().toLowerCase();
+ if(db.barang.some(x=>x.id!=b.id&&nz(x.nama)==nz(v[0]))){alert("Nama barang "+v[0]+" sudah ada. Tambahkan keterangan (ukuran atau rasa) supaya berbeda.");return false}
+ if(v[4]===0&&!confirm("Modal Rp0 membuat keuntungan tampak palsu. Tetap simpan dengan modal Rp0?"))return false;
+ if((v[2]>100000||v[4]>10000000)&&!confirm("Angka sangat besar (stok "+v[2]+", modal "+rp(v[4])+"). Sudah benar?"))return false;
+ lg((b.id?"Ubah":"Tambah")+" barang "+v[0]);
+ if(b.id){if(v[4]!=Math.round(modal(b)))b.modal=v[4];if(v[2]!=(b.stok||0))ml(b,v[2]-(b.stok||0),"Koreksi manual");Object.assign(b,{nama:v[0],isi:v[1]||1,stok:v[2],min:v[3],sat,upd:iso(0)})}
+ else{let nb={id:uid(),nama:v[0],isi:v[1]||1,stok:v[2],min:v[3],modal:v[4],sat,harga:[],upd:iso(0)};db.barang.push(nb);if(v[2])ml(nb,v[2],"Stok awal")}chg()})}
+const lineModal=(b,h)=>h.jenis=="karton"?h.harga/(b.isi||1):h.harga;
+function kartuBarang(b){
+ let L=b.harga||[],mn=L.length?Math.min(...L.map(h=>lineModal(b,h))):null,st=b.stok||0,bt=b.min==null?5:b.min,S=b.sat||"karton",ik=b.isi||1,rv=rsv(b.id);
+ return `<div class="c"><div class="m">Isi ${ik} pcs per ${S}${b.upd?" | Diubah "+tgl(b.upd):""}</div>${L.map(h=>{let sp=db.supplier.find(x=>x.id==h.sup),m=lineModal(b,h),lm=h.tgl&&hari(h.tgl)<-60;return `<div class="row m" style="align-items:center"><span>${H(sp?sp.nama:"?")}: ${h.jenis=="karton"?S:"pcs"} ${rp(h.harga)}${h.tgl?` <span style="${lm?"color:var(--bad)":""}">(${tgl(h.tgl)}${lm?", lama":""})</span>`:""}</span><span>${rp(m)}/pcs ${m==mn?"<b>termurah</b>":""} <button class="b" style="min-height:30px;padding:2px 8px" onclick="hapusHarga('${b.id}','${h.id}')">x</button></span></div>`}).join("")}<div class="row"><b style="color:${st<bt?"var(--bad)":"inherit"}">Stok ${st.toLocaleString("id-ID")} pcs</b><span class="m">${Math.floor(st/ik)} ${S}, peringatan di bawah ${bt}</span></div>${rv?`<div class="m">Dipesan belum dibuat ${rv} pcs | Di rak sekarang <b>${st+rv}</b> pcs</div>`:""}<div class="g"><button class="b" onclick="eHarga('${b.id}')">+ Harga beli</button><button class="b" onclick="tambahStok('${b.id}')">Tambah stok</button><button class="b" onclick="eBarang('${b.id}')">Ubah</button><button class="b" onclick="salinB('${b.id}')">Salin</button></div><div class="g" style="margin-top:6px"><button class="b" onclick="opname('${b.id}')">Opname</button><button class="b" onclick="rusak('${b.id}')">Rusak</button><button class="b" onclick="rwS('${b.id}')">Riwayat stok</button><button class="b bad" onclick="hapusBarang('${b.id}')">Hapus</button></div></div>`}
+function eSupplier(){openForm("Supplier",[{l:"Nama supplier (otomatis huruf besar)",t:"text",up:true}],v=>{if(!v[0])return false;if(db.supplier.some(x=>x.nama==v[0])){alert("Supplier itu sudah ada.");return false}db.supplier.push({id:uid(),nama:v[0]});chg()})}
+function eHarga(id){let b=db.barang.find(x=>x.id==id);if(!db.supplier.length)return alert("Buat supplier dulu di bagian Supplier.");
+ let s=sheet(`<h2>Supplier</h2><div class="g">${db.supplier.map(x=>`<button class="b" data-s="${x.id}">${H(x.nama)}</button>`).join("")}</div>`);
+ s.querySelectorAll("[data-s]").forEach(e=>e.onclick=()=>{let sup=e.dataset.s;s.firstChild.innerHTML=`<h2>Jenis pembelian</h2><div class="g"><button class="b" data-j="pcs">Per pcs</button><button class="b" data-j="karton">Per ${b.sat||"karton"} (isi ${b.isi})</button></div>`;
+  s.querySelectorAll("[data-j]").forEach(f=>f.onclick=()=>{let j=f.dataset.j;s.remove();openForm("Harga "+(j=="pcs"?"per pcs":"per "+(b.sat||"karton")),[{l:"Harga (Rp)",t:"rp"}],v=>{if(!v[0])return false;b.harga=b.harga||[];b.harga.push({id:uid(),sup,jenis:j,harga:v[0],tgl:iso(0)});b.upd=iso(0);chg()})})})}
+function hapusHarga(bid,hid){if(!confirm("Hapus baris harga ini?"))return;let b=db.barang.find(x=>x.id==bid);b.harga=(b.harga||[]).filter(h=>h.id!=hid);chg()}
+function tambahStok(id){let b=db.barang.find(x=>x.id==id),L=b.harga||[];
+ if(!L.length)return alert("Buat dulu harga beli lewat tombol + Harga beli, supaya aplikasi tahu harga belanjanya.");
+ let s=sheet(`<h2>Tambah stok ${H(b.nama)}</h2><div class="m">Pilih harga beli yang dipakai:</div><div class="g" style="flex-direction:column">${L.map(h=>{let sp=db.supplier.find(x=>x.id==h.sup);return `<button class="b" data-h="${h.id}">${H(sp?sp.nama:"?")}: ${h.jenis=="karton"?(b.sat||"karton"):"pcs"} ${rp(h.harga)} (${rp(lineModal(b,h))}/pcs)</button>`}).join("")}</div>`);
+ s.querySelectorAll("[data-h]").forEach(e=>e.onclick=()=>{let h=L.find(x=>x.id==e.dataset.h);s.remove();openForm("Jumlah beli ("+(h.jenis=="karton"?(b.sat||"karton"):"pcs")+")",[{l:"Jumlah",t:"num"}],v=>{if(v[0]<=0)return false;beli(b,h,v[0])})})}
+function beli(b,h,jml){let sp=db.supplier.find(x=>x.id==h.sup),pcs=jml*(h.jenis=="karton"?(b.isi||1):1),biaya=jml*h.harga,lama=modal(b),sisa=Math.max(b.stok||0,0);
+ b.modal=(sisa*lama+biaya)/(sisa+pcs);b.stok=(b.stok||0)+pcs;b.upd=iso(0);ml(b,pcs,"Belanja "+(sp?sp.nama:""));
+ db.belanja.push({id:uid(),bid:b.id,m0:lama,m1:b.modal,tgl:iso(0),barang:b.nama,sup:sp?sp.nama:"?",jenis:h.jenis,jml,pcs,biaya});chg();
+ alert("Stok bertambah "+pcs+" pcs. Modal rata-rata "+rp(lama)+" menjadi "+rp(b.modal)+" per pcs.")}
+const batas=id=>{let b=db.barang.find(x=>x.id==id);return b&&b.min!=null?b.min:5};
+const stok=id=>{let b=db.barang.find(x=>x.id==id);return b?(b.stok||0):0};
+const nmB=id=>{let b=db.barang.find(x=>x.id==id);return b?H(b.nama):"?"};
+const bisaN=p=>p.isi.length?Math.min(...p.isi.map(i=>Math.floor(stok(i.b)/i.q))):0;
+function pakai(q){let u={};db.parcel.forEach(p=>{if(q[p.id])p.isi.forEach(i=>u[i.b]=(u[i.b]||0)+i.q*q[p.id])});return u}
+function peringatan(){let r=db.parcel.map(p=>{let k=p.isi.filter(i=>stok(i.b)<batas(i.b)||stok(i.b)<i.q);return k.length?`<div style="margin-top:4px"><b>${H(p.nama)}</b>: ${k.map(i=>nmB(i.b)+" ("+(stok(i.b)<i.q?"kurang":"menipis")+", stok "+stok(i.b)+")").join(", ")}</div>`:""}).join("");return r?`<div class="warn">Perlu beli barang:${r}</div>`:""}
+function kurangTrx(){let k=Object.entries(pakai(tx.q)).filter(([id,q])=>stok(id)<q);return k.length?`<div class="warn">Stok tidak cukup: ${k.map(([id,q])=>nmB(id)+" butuh "+q+", stok "+stok(id)).join("; ")}. Penjualan akan ditolak.</div>`:""}
+const waNo=h=>{let d=String(h||"").replace(/\D/g,"");return d.startsWith("0")?"62"+d.slice(1):d};
+const nz=x=>String(x).toUpperCase().replace(/[^A-Z0-9]/g,"");
+const pbF=p=>[{l:"Nama pembeli (otomatis huruf besar)",t:"text",v:p.nama||"",up:true},{l:"Nomor HP/WhatsApp (opsional)",t:"text",v:p.hp||""},{l:"Alamat (opsional)",t:"text",v:p.alamat||""},{l:"Catatan (opsional)",t:"text",v:p.cat||""}];
+function cekPb(v,ex){
+ if(!v[0])return false;let a=nz(v[0]);
+ if(db.pembeli.some(x=>x.id!=ex&&nz(x.nama)==a)){alert("Nama "+v[0]+" sudah ada. Tambahkan keterangan di belakang nama supaya berbeda.");return false}
+ let m=db.pembeli.find(x=>x.id!=ex&&((a.length>=3&&nz(x.nama).length>=3&&(nz(x.nama).startsWith(a)||a.startsWith(nz(x.nama))))||(v[1]&&x.hp&&waNo(x.hp)==waNo(v[1]))));
+ return m?confirm("Mirip dengan pembeli yang sudah ada: "+m.nama+(m.hp?" ("+m.hp+")":"")+". Tetap simpan sebagai pembeli lain?"):true}
+function formNama(awal,cb){openForm("Pembeli baru",pbF({nama:awal}),v=>{if(!cekPb(v))return false;cb(v[0],{hp:v[1],alamat:v[2],cat:v[3]})})}
+function ePembeli(){formNama("",(n,x)=>{db.pembeli.push(Object.assign({id:uid(),nama:n},x));chg()})}
+function eParcel(id){
+ let p=db.parcel.find(x=>x.id==id);if(!p){p={id:uid(),nama:"",isi:[],kemasan:0,harga:0,baru:1}}
+ let draft=JSON.parse(JSON.stringify(p));
+ const show=()=>{o.firstChild.innerHTML=`<h2>Parcel</h2><label class="m">Nama</label><input id="pn" value="${H(draft.nama)}"><label class="m">Harga jual</label><input id="ph" inputmode="numeric" value="${draft.harga.toLocaleString("id-ID")}"><label class="m">Biaya kemasan</label><input id="pk" inputmode="numeric" value="${draft.kemasan.toLocaleString("id-ID")}"><div class="m">Ketuk barang untuk menambah isi:</div><div class="g">${db.barang.map(b=>{let i=draft.isi.find(x=>x.b==b.id);return `<span style="display:inline-flex;gap:2px"><button class="b ${i?"on":""}" data-b="${b.id}">${H(b.nama)}${i?" x"+i.q:""}</button>${i?`<button class="b" data-m="${b.id}">-</button>`:""}</span>`}).join("")}</div><br><button class="b" id="rs">Kosongkan isi</button><button class="b pri" style="margin-top:8px" id="sv">Simpan</button><button class="b" style="width:100%;margin-top:8px" id="cl">Batal</button>`;
+  ["ph","pk"].forEach(k=>{let e=o.querySelector("#"+k);e.oninput=()=>{let n=e.value.replace(/\D/g,"");e.value=n?Number(n).toLocaleString("id-ID"):""}});
+  o.querySelectorAll("[data-b]").forEach(e=>e.onclick=()=>{rd();let i=draft.isi.find(x=>x.b==e.dataset.b);if(i)i.q++;else draft.isi.push({b:e.dataset.b,q:1});show()});
+  o.querySelectorAll("[data-m]").forEach(e=>e.onclick=()=>{rd();let i=draft.isi.find(x=>x.b==e.dataset.m);if(i){i.q--;if(i.q<=0)draft.isi=draft.isi.filter(x=>x!=i)}show()});
+  o.querySelector("#rs").onclick=()=>{rd();draft.isi=[];show()};
+  o.querySelector("#cl").onclick=()=>o.remove();
+  o.querySelector("#sv").onclick=()=>{rd();
+   if(!draft.nama)return alert("Nama parcel wajib diisi.");
+   if(db.parcel.some(x=>x.id!=p.id&&nz(x.nama)==nz(draft.nama)))return alert("Nama parcel sudah ada. Tambahkan keterangan supaya berbeda.");
+   if(!draft.isi.length)return alert("Pilih minimal satu barang sebagai isi parcel.");
+   if(draft.harga<=0)return alert("Harga jual harus lebih dari Rp0.");
+   let md=modalParcel(draft);if(draft.harga<md&&!confirm("Harga jual "+rp(draft.harga)+" di bawah modal "+rp(md)+" (rugi "+rp(md-draft.harga)+" per parcel). Tetap simpan?"))return;
+   delete draft.baru;draft.upd=iso(0);lg((p.baru?"Tambah":"Ubah")+" parcel "+draft.nama);if(p.baru)db.parcel.push(draft);else Object.assign(p,draft);o.remove();chg()};
+ };
+ const rd=()=>{draft.nama=o.querySelector("#pn").value.trim();draft.harga=Number(o.querySelector("#ph").value.replace(/\D/g,""))||0;draft.kemasan=Number(o.querySelector("#pk").value.replace(/\D/g,""))||0};
+ let o=sheet("");show();
+}
+function chg(){db.dirty++;save();draw()}
+/* ---------- transaksi ---------- */
+function vTrx(){
+ if(!db.pembeli.length||!db.parcel.length)return `<div class="ok">Isi dulu di tab Master: minimal 1 pembeli dan 1 parcel.</div>`;
+ if(!tx)tx={p:null,q:{},deal:0,jenis:"dp",met:"Tunai",date:iso(0),dp:0};
+ let tot=db.parcel.reduce((s,p)=>s+(tx.q[p.id]||0)*p.harga,0),ong=ongTx(),tt=(tx.deal||tot)+ong,min=minDP(tt);
+ let dpv=tx.jenis=="dp"?tx.dp:tt;
+ return peringatan()+`<h2>1. Pembeli</h2><input id="pq" placeholder="Cari pembeli (nama atau HP)" value="${H(pq)}" oninput="pq=this.value;pkr()"><div class="g" id="pk">${pkList()}</div><button class="b" style="margin-top:8px" onclick="tambahPembeli()">+ Pembeli baru</button>
+ <h2>2. Parcel (ketuk untuk pilih, ketuk lagi untuk batal)</h2><div class="g">${db.parcel.filter(p=>!p.nonaktif||tx.q[p.id]).map(p=>`<div style="flex:1 1 44%"><button class="b ${tx.q[p.id]?"on":""}" style="width:100%" onclick="tglP('${p.id}')">${tx.q[p.id]?"&#10003; ":""}${H(p.nama)}<br><small>${rp(p.harga)}<br>stok ${bisaN(p)} paket</small></button>${tx.q[p.id]?`<div class="g" style="justify-content:center;align-items:center;margin-top:6px"><button class="b" onclick="qtyP('${p.id}',-1)">-</button><b>${tx.q[p.id]}</b><button class="b" onclick="qtyP('${p.id}',1)">+</button></div>`:""}</div>`).join("")}</div><br><button class="b" onclick="tx.q={};tx.dp=0;tx.deal=0;tx.ong=null;draw()">Kosongkan</button>
+ <div class="c" style="margin-top:10px"><div class="row"><span>Total harga</span><b>${rp(tot)}</b></div>${tx.deal?`<div class="row"><span>Harga deal</span><b>${rp(tx.deal)}</b></div>`:""}${tx.kirim?`<div class="row"><span>Ongkos kirim</span><b>${ong?rp(ong):"GRATIS"}</b></div>`:""}${ong?`<div class="row"><b>Total bayar</b><b>${rp(tt)}</b></div>`:""}${role=="admin"?`<button class="b" onclick="openForm('Harga deal',[{l:'Harga deal (kosongkan = harga normal)',t:'rp',v:tx.deal}],v=>{tx.deal=v[0];tx.dp=0;draw()})">Harga deal</button>`:""}</div>
+ ${kurangTrx()}<h2>3. Bayar</h2><div class="g"><button class="b ${tx.met=="Tunai"?"on":""}" onclick="tx.met='Tunai';draw()">Tunai</button><button class="b ${tx.met=="Transfer"?"on":""}" onclick="tx.met='Transfer';draw()">Transfer</button><button class="b ${tx.jenis=="dp"?"on":""}" onclick="tx.jenis='dp';draw()">DP</button><button class="b ${tx.jenis=="lunas"?"on":""}" onclick="tx.jenis='lunas';draw()">Lunas</button></div>
+ ${tx.jenis=="dp"?`<div class="m" style="margin:8px 0">DP minimal ${rp(min)} (${gp("dp",50)}% dari total, boleh bayar lebih)</div><div class="g"><button class="b ${tx.dp==min?"on":""}" onclick="tx.dp=${min};draw()">${rp(min)}</button>${(Math.ceil(min/10000)*10000)>min&&(Math.ceil(min/10000)*10000)<tt?`<button class="b ${tx.dp==(Math.ceil(min/10000)*10000)?"on":""}" onclick="tx.dp=${(Math.ceil(min/10000)*10000)};draw()">${rp((Math.ceil(min/10000)*10000))}</button>`:""}<button class="b" onclick="openForm('Nominal DP',[{l:'Minimal ${rp(min)}',t:'rp',v:tx.dp}],v=>{if(v[0]<${min}){alert('DP kurang dari minimal ${rp(min)}');return false}tx.dp=Math.min(v[0],${tt});draw()})">Nominal lain${tx.dp&&tx.dp!=min&&tx.dp!=(Math.ceil(min/10000)*10000)?": "+rp(tx.dp):""}</button></div>`:""}
+ <h2>4. Tanggal bayar</h2><div class="g">${[[0,"Hari ini"],[1,"Kemarin"],[2,"2 hari lalu"]].map(([d,l])=>`<button class="b ${tx.date==iso(d)?"on":""}" onclick="tx.date='${iso(d)}';draw()">${l}</button>`).join("")}<button class="b" onclick="openForm('Pilih tanggal',[{l:'Format YYYY-MM-DD',t:'text',v:tx.date}],v=>{if(!validBayar(v[0])){alert('Tanggal tidak valid atau di masa depan');return false}tx.date=v[0];draw()})">Tanggal lain</button></div><div class="m" style="margin:6px 0">Dipakai: ${tgl(tx.date)}</div>
+ <h2>5. Pengambilan dan catatan (opsional)</h2><div class="c"><div class="m">${tx.ambil?"Ambil/kirim: "+tgl(tx.ambil):"Tanggal ambil/kirim belum diisi"}${tx.cat?"<br>Catatan: "+H(tx.cat):""}</div><button class="b" style="margin-top:8px" onclick="eAmbil()">Isi / ubah</button></div><h2>6. Pengiriman</h2><div class="c"><div class="g"><button class="b ${!tx.kirim?"on":""}" onclick="tx.kirim=0;tx.ong=null;tx.dp=0;draw()">Ambil sendiri</button><button class="b ${tx.kirim?"on":""}" onclick="tx.kirim=1;tx.ong=null;tx.dp=0;draw()">Dikirim</button></div>${tx.kirim?`<div class="row" style="margin-top:8px"><span>Ongkos kirim (${nPar(tx.q)} parcel)</span><b>${ong?rp(ong):"GRATIS"}</b></div><div class="m">${tx.ong!=null?"Diubah manual":gp("og",0)<=0?"Ongkir standar belum diatur di Master, Pengaturan":gp("gr",0)>0?"Gratis mulai "+gp("gr",0)+" parcel, di bawah itu "+rp(gp("og",0)):"Ongkir standar "+rp(gp("og",0))}</div><div class="g" style="margin-top:6px"><button class="b" onclick="eOng()">Ubah ongkir</button>${tx.ong!=null?`<button class="b" onclick="tx.ong=null;tx.dp=0;draw()">Kembali otomatis</button>`:""}</div>`:""}</div><button class="b pri" onclick="simpanTrx()">Simpan dan terbitkan nota</button>`;
+}
+function tambahPembeli(){formNama("",(n,x)=>{let id=uid();db.pembeli.push(Object.assign({id,nama:n},x));tx.p=id;chg()})}
+function tglP(id){if(tx.q[id])delete tx.q[id];else tx.q[id]=1;tx.dp=0;tx.deal=0;tx.ong=null;draw()}
+function qtyP(id,d){tx.q[id]=Math.max(1,(tx.q[id]||1)+d);tx.dp=0;tx.deal=0;tx.ong=null;draw()}
+function simpanTrx(){
+ if(roHP())return alert("HP ini diatur sebagai HP cadangan (baca saja). Catat transaksi di HP utama.");
+ if(role!="admin")tx.deal=0;
+ let items=db.parcel.filter(p=>tx.q[p.id]).map(p=>({pid:p.id,nama:p.nama,q:tx.q[p.id],harga:p.harga,modal:Math.round(modalParcel(p)),isi:p.isi.map(i=>({n:(db.barang.find(x=>x.id==i.b)||{}).nama||"?",q:i.q,b:i.b}))}));
+ if(!tx.p||!items.length)return alert("Pilih pembeli dan parcel dulu.");
+ let bd=items.find(i=>!i.isi||!i.isi.length||i.harga<=0);if(bd)return alert("Parcel "+bd.nama+" belum lengkap (isi kosong atau harga Rp0). Perbaiki di Master dulu.");
+ if(tx.date>iso(0))return alert("Tanggal bayar tidak boleh di masa depan.");
+ let use=pakai(tx.q),kur=Object.entries(use).filter(([id,q])=>stok(id)<q);
+ if(kur.length)return alert("Penjualan ditolak, barang belum cukup:\n"+kur.map(([id,q])=>nmB(id).replace(/&amp;/g,"&")+" butuh "+q+", stok "+stok(id)).join("\n"));
+ let tot=items.reduce((s,i)=>s+i.q*i.harga,0),ong=ongTx(),tt=(tx.deal||tot)+ong,min=minDP(tt),amt=tx.jenis=="dp"?tx.dp:tt,jf=(tx.jenis=="dp"&&amt>=tt)?"lunas":tx.jenis;
+ if(tx.jenis=="dp"&&amt<min)return alert("Pilih nominal DP minimal "+rp(min));
+ if(!confirm((jf=="dp"?"DP "+rp(amt)+", sisa "+rp(tt-amt):"Lunas "+rp(amt))+". Benar?"))return;
+ let o={id:uid(),pembeli:tx.p,items,total:tt,pays:[{jenis:jf,amt,date:tx.date,met:tx.met}],use,ambil:tx.ambil||"",cat:tx.cat||"",kirim:tx.kirim?1:0,ongkir:ong};
+ Object.entries(use).forEach(([id,q])=>{let b=db.barang.find(x=>x.id==id);b.stok=(b.stok||0)-q;ml(b,-q,"Terjual")});
+ db.orders.push(o);
+ try{
+   if(!window.kirimNotaKeFirebase){ alert("Firebase belum siap. Nota tersimpan di HP, tapi belum terkirim ke Firebase. Muat ulang halaman lalu coba lagi."); }
+   else { let pb=db.pembeli.find(x=>x.id==o.pembeli);
+     window.kirimNotaKeFirebase(o,pb?pb.nama:"").then(()=>alert("Nota terkirim ke Firebase.")).catch(e=>alert("Gagal kirim ke Firebase: "+(e&&e.message||e)));
+   }
+ }catch(e){ alert("Error Firebase: "+e.message) }
+ terbit(o,db.menunggu);db.menunggu="";tx=null;pq="";chg();tab="nota";draw();
+}
+function terbit(o,pengganti){
+ let pb=db.pembeli.find(x=>x.id==o.pembeli);
+ let n={no:gp("awal","INV")+"-"+String(db.seq++).padStart(4,"0"),order:o.id,cetak:iso(0),cust:pb?pb.nama:"?",items:JSON.parse(JSON.stringify(o.items)),total:o.total,pays:JSON.parse(JSON.stringify(o.pays)),toko:(t=>{let c={...t};delete c.logo;return c})(db.toko),pengganti:pengganti||"",batal:"",ambil:o.ambil||"",cat:o.cat||"",kirim:o.kirim||0,ongkir:o.ongkir||0};
+ db.notas.push(n);return n;
+}
+/* ---------- pembeli / pelunasan ---------- */
+let pf={q:"",st:"all",so:"new",md:"trx"},pq="",rfh=null;
+const lastUse=id=>{for(let i=db.orders.length-1;i>=0;i--)if(db.orders[i].pembeli==id)return i;return -1};
+function pkList(){let q=pq.trim().toLowerCase(),L=db.pembeli.filter(p=>p.id==tx.p||(!p.arsip&&(!q||(p.nama+" "+(p.hp||"")).toLowerCase().includes(q)))).sort((a,b)=>lastUse(b.id)-lastUse(a.id)||a.nama.localeCompare(b.nama));
+ return L.map(p=>`<button class="b ${tx.p==p.id?"on":""}" onclick="tx.p=tx.p=='${p.id}'?null:'${p.id}';draw()">${tx.p==p.id?"&#10003; ":""}${H(p.nama)}</button>`).join("")||'<div class="m">Tidak ada pembeli yang cocok.</div>'}
+const pkr=()=>{let e=document.getElementById("pk");if(e)e.innerHTML=pkList()};
+const pbS=id=>{let L=db.orders.filter(o=>o.pembeli==id);return{L,tot:L.reduce((s,o)=>s+o.total,0),sisa:L.reduce((s,o)=>s+o.total-paid(o),0)}};
+function ocard(o){let pb=db.pembeli.find(x=>x.id==o.pembeli),sisa=o.total-paid(o),j=o.diambil?null:(sisa>0||o.ambil)?jt(o):null,nt=db.notas.filter(n=>n.order==o.id&&!n.batal).pop();
+ return `<div class="c"><div class="row"><b>${H(pb?pb.nama:"?")}</b><b style="color:${sisa>0?"var(--bad)":"var(--ac)"}">${sisa>0?"Belum lunas":"Lunas"}</b></div>${o.items.map((i,k)=>`<div class="row m" style="align-items:center"><span>${H(i.nama)} x${i.q}${o.diambil?"":` | Dibuat <b>${i.dibuat||0}/${i.q}</b>`}</span>${o.diambil?"":`<span class="g"><button class="b" style="min-height:30px;padding:2px 12px" onclick="buat('${o.id}',${k},-1)">-</button><button class="b" style="min-height:30px;padding:2px 12px" onclick="buat('${o.id}',${k},1)">+</button></span>`}</div>`).join("")}${o.diambil?"":`<div class="m" style="font-weight:600;color:${stBuat(o)[1]}">Status: ${stBuat(o)[0]} (${stBuat(o)[2]} dari ${stBuat(o)[3]} parcel sudah dibuat)</div>${sisaBuat(o)?`<button class="b" onclick="buatSemua('${o.id}')">Tandai semua sudah dibuat</button>`:""}`}<div class="row"><span>Total</span><span>${rp(o.total)}</span></div>${o.pays.map(p=>`<div class="m">${plab(p)} ${rp(p.amt)} ${tgl(p.date)} ${p.met}</div>`).join("")}${o.kirim?`<div class="m">Dikirim | Ongkir: ${o.ongkir?rp(o.ongkir):"GRATIS"}</div>`:""}${o.ambil?`<div class="m">Ambil/kirim: ${tgl(o.ambil)}</div>`:""}${o.cat?`<div class="m">Catatan: ${H(o.cat)}</div>`:""}<div class="m">${o.diambil?"Sudah diambil/dikirim "+tgl(o.diambil):"Belum diambil/dikirim"}</div>${j?`<div class="m" style="color:${j.bad?"var(--bad)":"var(--mut)"};font-weight:600">${j.t}</div>`:""}${sisa>0?`<div class="row"><b>Sisa</b><b>${rp(sisa)}</b></div><button class="b pri" onclick="lunasi('${o.id}')">Lunasi sisa</button>`:""}<div class="g" style="margin-top:8px">${o.diambil?"":`<button class="b" onclick="siapO('${o.id}')">Daftar siapkan barang</button>`}${nt?`<button class="b" onclick="lihat('${nt.no}',0)">Buka nota</button>`:""}${sisa>0?`<button class="b" onclick="tagih('${o.id}')">Tagih WhatsApp</button>`:""}<button class="b" onclick="${o.diambil?"batalAmbil":"tandaiAmbil"}('${o.id}')">${o.diambil?"Batal tandai diambil":"Sudah diambil"}</button><button class="b" onclick="eOrd('${o.id}')">Ubah catatan</button>${role=="admin"&&paid(o)>0?`<button class="b bad" onclick="refund('${o.id}')">Refund</button>`:""}</div>${role=="admin"?`<div class="m">Untung: ${rp(o.total-o.items.reduce((s,i)=>s+i.modal*i.q,0))}</div>`:""}</div>`}
+function olist(){
+ let q=pf.q.trim().toLowerCase(),ix=o=>db.orders.indexOf(o),sx=o=>o.total-paid(o),ak=o=>o.diambil||!o.ambil?"9999":o.ambil,
+ cmp={new:(a,b)=>ix(b)-ix(a),sisa:(a,b)=>sx(b)-sx(a)||ix(b)-ix(a),ambil:(a,b)=>ak(a).localeCompare(ak(b))||ix(b)-ix(a)}[pf.so],
+ O=db.orders.filter(o=>{let p=db.pembeli.find(x=>x.id==o.pembeli)||{},sq=sx(o);return(!q||(p.nama+" "+(p.hp||"")+" "+o.items.map(i=>i.nama).join(" ")).toLowerCase().includes(q))&&(pf.st=="all"||(pf.st=="belum"&&sq>0)||(pf.st=="lunas"&&sq<=0)||(pf.st=="blm"&&!o.diambil)||(pf.st=="blt"&&!o.diambil&&sisaBuat(o)>0)||(pf.st=="sdg"&&!o.diambil&&stBuat(o)[0]=="Sedang dibuat")||(pf.st=="sls"&&!o.diambil&&sisaBuat(o)==0))}).sort(cmp);
+ if(!O.length)return `<div class="ok">Tidak ada transaksi yang cocok.</div>`;
+ let sm=`<div class="c"><div class="row"><span>Transaksi</span><b>${O.length}</b></div>${role=="admin"?`<div class="row"><span>Total nilai</span><b>${rp(O.reduce((s,o)=>s+o.total,0))}</b></div>`:""}<div class="row"><span>Sisa belum dibayar</span><b>${rp(O.reduce((s,o)=>s+Math.max(0,sx(o)),0))}</b></div></div>`;
+ if(pf.md=="trx")return sm+O.map(ocard).join("");
+ let G={};O.forEach(o=>(G[o.pembeli]=G[o.pembeli]||[]).push(o));
+ return sm+Object.entries(G).sort((a,b)=>cmp(a[1][0],b[1][0])).map(([id,L])=>{let p=db.pembeli.find(x=>x.id==id)||{nama:"?"},sq=L.reduce((s,o)=>s+Math.max(0,sx(o)),0);
+  return `<div class="c"><div class="row"><b>${H(p.nama)}</b><b style="color:${sq>0?"var(--bad)":"var(--ac)"}">${sq>0?"Sisa "+rp(sq):"Lunas semua"}</b></div><div class="m">${H(p.hp||"")}</div><div class="m">${L.length} transaksi${role=="admin"?" | Total belanja "+rp(L.reduce((s,o)=>s+o.total,0)):""}</div><button class="b" style="margin-top:6px" onclick="ppb('${id}')">Riwayat</button></div>`}).join("")}
+const orf=()=>{let e=document.getElementById("ol");if(e)e.innerHTML=olist()};
+function vOrd(){
+ if(!db.orders.length)return `<div class="ok">Belum ada transaksi.</div>`;
+ const B=(a,k)=>a.map(([v,l])=>`<button class="b ${pf[k]==v?"on":""}" onclick="pf.${k}='${v}';draw()">${l}</button>`).join("");
+ return `<input id="oq" placeholder="Cari pembeli, HP, atau parcel" value="${H(pf.q)}" oninput="pf.q=this.value;orf()"><div class="g">${B([["trx","Per transaksi"],["pb","Per pembeli"]],"md")}</div><div class="g" style="margin-top:8px">${B([["all","Semua"],["belum","Belum lunas"],["lunas","Lunas"],["blm","Belum diambil"],["blt","Belum selesai dibuat"],["sdg","Sedang dibuat"],["sls","Siap diambil"]],"st")}</div><div class="m" style="margin:8px 0 4px">Urutkan</div><div class="g">${B([["new","Terbaru"],["sisa","Sisa terbesar"],["ambil","Ambil terdekat"]],"so")}</div><div id="ol" style="margin-top:10px">${olist()}</div>`}
+function ppb(id){let s=sheet("");rfh=()=>{if(!document.body.contains(s)){rfh=null;return}
+ let p=db.pembeli.find(x=>x.id==id);if(!p){s.remove();return}let st=pbS(id);
+ s.firstChild.innerHTML=`<h2>${H(p.nama)}</h2><div class="m">${H(p.hp||"Belum ada HP")}${p.alamat?" | "+H(p.alamat):""}</div>${p.cat?`<div class="m">Catatan: ${H(p.cat)}</div>`:""}<div class="c" style="margin-top:8px"><div class="row"><span>Transaksi</span><b>${st.L.length}</b></div>${role=="admin"?`<div class="row"><span>Total belanja</span><b>${rp(st.tot)}</b></div>`:""}<div class="row"><span>Sisa belum dibayar</span><b>${rp(st.sisa)}</b></div></div><div class="g" style="margin-bottom:8px"><button class="b" onclick="ubahPembeli('${id}')">Ubah data</button><button class="b" id="tt">Tutup</button></div>${st.L.slice().reverse().map(ocard).join("")}`;
+ s.firstChild.querySelector("#tt").onclick=()=>s.remove()};rfh()}
+function tagih(id){let o=db.orders.find(x=>x.id==id),p=db.pembeli.find(x=>x.id==o.pembeli)||{nama:"",hp:""};
+ let t="Halo Kak "+p.nama+", ini dari "+(db.toko.nama||"toko")+". Pesanan "+o.items.map(i=>i.nama+" x"+i.q).join(", ")+" (total "+rp(o.total)+") masih ada sisa pembayaran "+rp(o.total-paid(o))+(o.ambil?", mohon dilunasi sebelum "+tgl(o.ambil):", mohon dilunasi")+". Terima kasih.";
+ window.open("https://wa.me/"+waNo(p.hp)+"?text="+encodeURIComponent(t),"_blank")}
+function eOrd(id){let o=db.orders.find(x=>x.id==id);openForm("Ubah catatan pesanan",[{l:"Tanggal ambil/kirim (YYYY-MM-DD, kosongkan jika belum)",t:"text",v:o.ambil||""},{l:"Catatan",t:"text",v:o.cat||""}],v=>{if(v[0]&&!validTgl(v[0])){alert("Tanggal tidak valid");return false}o.ambil=v[0];o.cat=v[1];lg("Ubah catatan pesanan (nota yang sudah terbit tidak diubah)");chg()})}
+function tandaiAmbil(id){let o=db.orders.find(x=>x.id==id);if(sisaBuat(o)&&!confirm("Masih ada "+sisaBuat(o)+" parcel yang belum ditandai dibuat. Tetap tandai sudah diambil/dikirim?"))return;if(!confirm("Tandai pesanan ini sudah diambil/dikirim hari ini?"))return;o.items.forEach(i=>i.dibuat=i.q);o.diambil=iso(0);chg()}
+function batalAmbil(id){db.orders.find(x=>x.id==id).diambil="";chg()}
+function lunasi(id){
+ if(roHP())return alert("HP cadangan hanya baca.");
+ let o=db.orders.find(x=>x.id==id),sisa=o.total-paid(o),d=iso(0),m="Tunai";
+ const sh=()=>{s.firstChild.innerHTML=`<h2>Lunasi ${rp(sisa)}</h2><div class="g"><button class="b ${m=="Tunai"?"on":""}" data-m="Tunai">Tunai</button><button class="b ${m=="Transfer"?"on":""}" data-m="Transfer">Transfer</button></div><br><div class="g">${[[0,"Hari ini"],[1,"Kemarin"],[2,"2 hari lalu"]].map(([n,l])=>`<button class="b ${d==iso(n)?"on":""}" data-d="${iso(n)}">${l}</button>`).join("")}</div><div class="m" style="margin:8px 0">Tanggal: ${tgl(d)}</div><button class="b pri" id="go">Lunasi dan terbitkan nota</button>`;
+  s.querySelectorAll("[data-m]").forEach(e=>e.onclick=()=>{m=e.dataset.m;sh()});s.querySelectorAll("[data-d]").forEach(e=>e.onclick=()=>{d=e.dataset.d;sh()});
+  s.querySelector("#go").onclick=()=>{let sk=o.total-paid(o);if(sk<=0){s.remove();return alert("Pesanan ini sudah lunas.")}o.pays.push({jenis:"lunas",amt:sk,date:d,met:m});lg("Pelunasan "+rp(sk));terbit(o);s.remove();chg();go("nota")}};
+ let s=sheet("");sh();
+}
+function stokKembali(o){let R={};if(o.diambil)return[];o.items.forEach(i=>{let r=Math.max(0,i.q-(i.dibuat||0));if(r>0)needB(i).forEach(c=>R[c.b]=(R[c.b]||0)+c.q*r)});return Object.entries(R)}
+function infoBatal(o){let tot=o.items.reduce((s,i)=>s+i.q,0),d=tot-sisaBuat(o);if(o.diambil)return"\n\nPesanan SUDAH diambil/dikirim: stok TIDAK dikembalikan.";if(d>0)return"\n\n"+d+" dari "+tot+" parcel sudah dibuat: stok hanya dikembalikan untuk yang belum dibuat. Kalau barangnya kembali ke rak, catat lewat Stok opname.";return"\n\nStok dikembalikan penuh."}
+function refund(id){if(roHP())return alert("HP cadangan hanya baca.");let o=db.orders.find(x=>x.id==id),mx=paid(o);if(mx<=0)return alert("Belum ada pembayaran yang bisa direfund.");
+ openForm("Refund (maksimal "+rp(mx)+")",[{l:"Nominal refund (Rp)",t:"rp"}],v=>{if(v[0]<=0||v[0]>mx){alert("Nominal harus lebih dari 0 dan tidak melebihi "+rp(mx));return false}setTimeout(()=>refund2(id,v[0]),0)})}
+function refund2(id,amt){let o=db.orders.find(x=>x.id==id),m="Tunai";
+ const sh=()=>{s.firstChild.innerHTML=`<h2>Refund ${rp(amt)}</h2><div class="m">Metode pengembalian uang:</div><div class="g"><button class="b ${m=="Tunai"?"on":""}" data-m="Tunai">Tunai</button><button class="b ${m=="Transfer"?"on":""}" data-m="Transfer">Transfer</button></div><div class="m" style="margin:10px 0">Pilih alasan untuk melanjutkan:</div><div class="g">${["Barang rusak","Pembeli batal sebagian","Salah harga","Barang kurang"].map(a=>`<button class="b bad" data-a="${a}">${a}</button>`).join("")}</div><div class="m" style="margin-top:8px">Total pesanan turun ${rp(amt)} dan nota baru terbit. Stok TIDAK berubah; kalau barang kembali ke rak, catat lewat Stok opname.</div>`;
+  s.querySelectorAll("[data-m]").forEach(e=>e.onclick=()=>{m=e.dataset.m;sh()});
+  s.querySelectorAll("[data-a]").forEach(e=>e.onclick=()=>{if(amt>paid(o))return alert("Nominal melebihi pembayaran.");if(!confirm("Refund "+rp(amt)+" ("+m+", "+e.dataset.a+")?"))return;o.pays.push({jenis:"refund",amt:-amt,date:iso(0),met:m,alasan:e.dataset.a});o.total-=amt;lg("Refund "+rp(amt)+" ("+e.dataset.a+")");terbit(o);s.remove();chg();go("nota")})};
+ let s=sheet("");sh()}
+/* ---------- nota ---------- */
+let nf={q:"",st:"all",lim:20},nIsi=0;
+const nLast=()=>{let m={};db.notas.forEach(n=>{if(!n.batal)m[n.order]=n.no});return m};
+const sisaN=n=>n.total-n.pays.reduce((s,p)=>s+p.amt,0);
+const nSt=(n,last)=>n.batal?"batal":last[n.order]!=n.no?"lama":sisaN(n)>0?"belum":"lunas";
+const hari=d=>Math.round((new Date(d+"T00:00")-new Date(iso(0)+"T00:00"))/864e5);
+function jt(n){
+ let o9=db.orders.find(x=>x.id==n.order),am=o9?(o9.ambil||""):(n.ambil||"");
+ if(am){let d=hari(am);if(d<0)return{t:"Lewat jatuh tempo "+(-d)+" hari (ambil "+tgl(am)+")",bad:1};if(d<=gp("jh",2))return{t:d?"Ambil "+d+" hari lagi":"Ambil hari ini",bad:1};return{t:"Ambil "+tgl(am)}}
+ let a=-hari(n.pays[0].date);return a>=gp("jt",7)?{t:"Belum lunas "+a+" hari",bad:1}:null}
+const nrf=()=>{let e=document.getElementById("nl");if(e)e.innerHTML=nlist()};
+function nlist(){
+ let last=nLast(),q=nf.q.trim().toLowerCase(),
+ L=db.notas.slice().reverse().filter(n=>{let s=nSt(n,last);return(nf.st=="all"||s==nf.st)&&(!q||(n.no+" "+n.cust).toLowerCase().includes(q))}),
+ aktif=L.filter(n=>{let s=nSt(n,last);return s=="belum"||s=="lunas"}),
+ tot=aktif.reduce((s,n)=>s+n.total,0),sp=aktif.reduce((s,n)=>s+Math.max(0,sisaN(n)),0);
+ if(!L.length)return `<div class="ok">Tidak ada nota yang cocok.</div>`;
+ return `<div class="c"><div class="row"><span>Nota ditampilkan</span><b>${L.length}</b></div><div class="row"><span>Nilai nota aktif</span><b>${rp(tot)}</b></div><div class="row"><span>Sisa belum dibayar</span><b>${rp(sp)}</b></div></div>`+
+ L.slice(0,nf.lim).map(n=>{let s=nSt(n,last),j=s=="belum"?jt(n):null,B={batal:["BATAL","var(--bad)"],lama:["Riwayat","var(--mut)"],belum:["Belum lunas, sisa "+rp(sisaN(n)),"var(--bad)"],lunas:["Lunas","var(--ac)"]}[s];
+  return `<div class="c"><div class="row"><b>${n.no}</b><b style="color:${B[1]}">${B[0]}</b></div><div class="m">${H(n.cust)} | ${rp(n.total)} | ${tgl(n.cetak)}</div><div class="m">${n.items.map(i=>H(i.nama)+" x"+i.q).join(", ")}</div>${j?`<div class="m" style="color:${j.bad?"var(--bad)":"var(--mut)"};font-weight:600">${j.t}</div>`:""}<button class="b" style="margin-top:6px" onclick="lihat('${n.no}',0)">Buka</button></div>`}).join("")+
+ (L.length>nf.lim?`<button class="b" style="width:100%" onclick="nf.lim+=20;nrf()">Muat lebih banyak (${L.length-nf.lim} lagi)</button>`:"");
+}
+function vNota(){
+ if(!db.notas.length)return `<div class="ok">Belum ada nota.</div>`;
+ let last=nLast(),dj=db.notas.filter(n=>nSt(n,last)=="belum"&&(jt(n)||{}).bad).length;
+ return (dj?`<div class="warn">${dj} nota belum lunas sudah dekat atau lewat jatuh tempo.</div>`:"")+`<input id="nq" placeholder="Cari nama pembeli atau nomor INV" value="${H(nf.q)}" oninput="nf.q=this.value;nf.lim=20;nrf()"><div class="g">${[["all","Semua"],["belum","Belum lunas"],["lunas","Lunas"],["batal","Batal"]].map(([k,l])=>`<button class="b ${nf.st==k?"on":""}" onclick="nf.st='${k}';nf.lim=20;draw()">${l}</button>`).join("")}</div>${role=="admin"?`<button class="b" style="width:100%;margin:8px 0" onclick="eksN()">Ekspor CSV</button>`:""}<div id="nl" style="margin-top:8px">${nlist()}</div>`}
+function eAmbil(){openForm("Pengambilan dan catatan",[{l:"Tanggal ambil/kirim (YYYY-MM-DD, kosongkan jika belum)",t:"text",v:tx.ambil||""},{l:"Catatan (misalnya tulisan kartu)",t:"text",v:tx.cat||""}],v=>{if(v[0]&&!validTgl(v[0])){alert("Tanggal tidak valid");return false}tx.ambil=v[0];tx.cat=v[1];draw()})}
+function bagi(n){
+ let L=[n.toko.nama,n.toko.hp];if(n.toko.alamat)L.push(n.toko.alamat);
+ L.push("","No. "+n.no+"  "+tgl(n.cetak),"Customer: "+n.cust);if(n.ambil)L.push("Ambil/kirim: "+tgl(n.ambil));if(n.cat)L.push("Catatan: "+n.cat);
+ L.push("");n.items.forEach(i=>L.push(i.nama+" x"+i.q+" = "+rp(i.q*i.harga)));
+ let sm=n.items.reduce((s,i)=>s+i.q*i.harga,0),T0=n.total-n.pays.reduce((s,p)=>s+(p.jenis=="refund"?p.amt:0),0)-(n.ongkir||0);if(sm!=T0)L.push((sm>T0?"Potongan (harga deal): -":"Penyesuaian harga: +")+rp(Math.abs(sm-T0)));if(n.kirim)L.push("Ongkos kirim: "+(n.ongkir?rp(n.ongkir):"GRATIS"));
+ L.push("Total: "+rp(n.total));n.pays.forEach(p=>L.push(plab(p)+" "+tgl(p.date)+" ("+p.met+"): "+rp(p.amt)));
+ let sc=sisaN(n);L.push("Sisa: "+rp(sc),sc>0?"*BELUM LUNAS*":"*LUNAS*");if(n.toko.foot)L.push("",n.toko.foot);
+ let t=(n.batal?"*NOTA BATAL* ("+n.batal+")\n":"")+L.join("\n");
+ window.open("https://wa.me/"+waNo(((db.pembeli.find(x=>x.id==(db.orders.find(y=>y.id==n.order)||{}).pembeli))||{}).hp)+"?text="+encodeURIComponent(t),"_blank")}
+function eksN(){openForm("Ekspor nota CSV",[{l:"Bulan (YYYY-MM). Kosongkan untuk semua",t:"text",v:iso(0).slice(0,7)}],v=>{
+ if(v[0]&&!/^\d{4}-(0[1-9]|1[0-2])$/.test(v[0])){alert("Format bulan: YYYY-MM");return false}
+ let last=nLast(),c=x=>{x=String(x==null?"":x);if(/^[=+\-@]/.test(x)&&isNaN(x))x="'"+x;return '"'+x.replace(/"/g,'""')+'"'},
+ R=[["No","Tanggal","Customer","Isi","Total","Dibayar","Sisa","Status","Ambil/kirim","Catatan","Alasan batal"]];
+ db.notas.filter(n=>!v[0]||n.cetak.slice(0,7)==v[0]).forEach(n=>R.push([n.no,n.cetak,n.cust,n.items.map(i=>i.nama+" x"+i.q).join("; "),n.total,n.total-sisaN(n),sisaN(n),{batal:"Batal",lama:"Riwayat",belum:"Belum lunas",lunas:"Lunas"}[nSt(n,last)],n.ambil||"",n.cat||"",n.batal||""]));
+ if(R.length<2){alert("Tidak ada nota di bulan itu");return false}
+ let f=new Blob(["\ufeff"+R.map(r=>r.map(c).join(",")).join("\r\n")],{type:"text/csv"}),u=URL.createObjectURL(f),a=document.createElement("a");a.href=u;a.download="nota-"+(v[0]||"semua")+".csv";document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(u)},3000)})}
+function notaRk(){let last=nLast(),st={batal:0,lama:0,belum:0,lunas:0},sp=0,dj=0;db.notas.forEach(n=>{let s=nSt(n,last);st[s]++;if(s=="belum"){sp+=sisaN(n);if((jt(n)||{}).bad)dj++}});
+ return `<h2>Nota (semua periode)</h2><div class="c"><div class="row"><span>Nota diterbitkan</span><b>${db.notas.length}</b></div><div class="row"><span>Nota batal</span><b>${st.batal}</b></div><div class="row"><span>Nota belum lunas</span><b>${st.belum}</b></div><div class="row"><span>Piutang dari nota aktif</span><b>${rp(sp)}</b></div><div class="row"><span>Dekat atau lewat jatuh tempo</span><b style="color:${dj?"var(--bad)":"inherit"}">${dj}</b></div></div>`}
+function lihat(no,re){
+ let n=db.notas.find(x=>x.no==no),bayar=n.pays.reduce((s,p)=>s+p.amt,0),o1=db.orders.find(x=>x.id==n.order),lun=!n.batal&&!roHP()&&n.total-bayar>0&&o1&&o1.pays.length==n.pays.length;
+ let s=sheet(`<div class="nota" id="nt"><div style="text-align:center">${okImg(db.toko.logo)?`<img src="${db.toko.logo}" style="max-height:60px;max-width:100%"><br>`:""}<b>${H(n.toko.nama)}</b><br>${H(n.toko.hp)}${n.toko.alamat?"<br>"+H(n.toko.alamat):""}</div>${n.batal?`<div class="stamp">BATAL (${H(n.batal)})</div>`:""}${re?`<div class="stamp">REPRINT ${tgl(iso(0))}</div>`:""}<div class="row"><span>No. ${n.no}</span><span>${tgl(n.cetak)}</span></div>${n.pengganti?`<div>Pengganti ${n.pengganti}</div>`:""}<div>Customer: <b>${H(n.cust)}</b></div>${n.ambil?`<div>Ambil/kirim: <b>${tgl(n.ambil)}</b></div>`:""}${n.cat?`<div>Catatan: ${H(n.cat)}</div>`:""}<hr>${n.items.map(i=>`<div class="row"><span>${H(i.nama)} x${i.q}<br><small>${rp(i.harga)}</small>${nIsi&&i.isi?`<br><small>Isi: ${i.isi.map(x=>H(x.n)+" x"+x.q*i.q).join(", ")}</small>`:""}</span><span>${rp(i.q*i.harga)}</span></div>`).join("")}${(()=>{let sm=n.items.reduce((s,i)=>s+i.q*i.harga,0),T0=n.total-n.pays.reduce((s,p)=>s+(p.jenis=="refund"?p.amt:0),0)-(n.ongkir||0);return (sm!=T0?`<div class="row"><span>${sm>T0?"Potongan (harga deal)":"Penyesuaian harga"}</span><span>${sm>T0?"-":"+"}${rp(Math.abs(sm-T0))}</span></div>`:"")+(n.kirim?`<div class="row"><span>Ongkos kirim</span><span>${n.ongkir?rp(n.ongkir):"GRATIS"}</span></div>`:"")})()}<div class="row"><b>Total${n.pays.some(p=>p.jenis=="refund")?" (setelah refund)":""}</b><b>${rp(n.total)}</b></div>${n.pays.map(p=>`<div class="row"><span>${plab(p)} ${tgl(p.date)} (${p.met})${p.alasan?" - "+H(p.alasan):""}</span><span>${rp(p.amt)}</span></div>`).join("")}<div class="row"><b>Sisa</b><b>${rp(n.total-bayar)}</b></div><div style="text-align:center"><b>${n.total-bayar>0?"BELUM LUNAS":"LUNAS"}</b></div>${n.toko.foot?`<div style="text-align:center;margin-top:8px;font-size:13px">${H(n.toko.foot)}</div>`:""}</div><div class="noprint" style="margin-top:10px">${n.log?`<div class="m" style="margin-bottom:8px">Dibatalkan oleh ${n.log.oleh} pada ${tgl(n.log.waktu.slice(0,10))} ${n.log.waktu.slice(11)}</div>`:""}${lun?`<button class="b pri" id="ln" style="margin-bottom:8px">Lunasi sisa ${rp(n.total-bayar)}</button>`:""}<button class="b pri" onclick="cetakNota()">Cetak / simpan PDF</button><div class="g" style="margin-top:8px"><button class="b" id="wa">Bagikan WhatsApp</button>${n.items.some(i=>i.isi)?`<button class="b" id="ik">${nIsi?"Sembunyikan":"Tampilkan"} isi parcel</button>`:""}<button class="b" id="rp">Reprint</button>${n.batal||role!="admin"||roHP()?"":`<button class="b bad" id="bt">Batalkan</button>`}<button class="b" id="tp">Tutup</button></div><div class="m" style="margin-top:8px">Untuk gambar: screenshot layar nota.</div></div>`);
+ s.querySelector("#tp").onclick=()=>s.remove();
+ s.querySelector("#wa").onclick=()=>bagi(n);
+ let ln=s.querySelector("#ln");if(ln)ln.onclick=()=>{s.remove();lunasi(n.order)};
+ let ik=s.querySelector("#ik");if(ik)ik.onclick=()=>{nIsi=nIsi?0:1;s.remove();lihat(no,re)};
+ s.querySelector("#rp").onclick=()=>{s.remove();lihat(no,1)};
+ let bt=s.querySelector("#bt");if(bt)bt.onclick=()=>{let o0=db.orders.find(x=>x.id==n.order);if(o0&&n.pays.length!=o0.pays.length){let t=db.notas.slice().reverse().find(x=>x.order==n.order&&!x.batal);alert("Batalkan dulu nota terbaru untuk pesanan ini"+(t?" ("+t.no+")":"")+".");return}let s2=sheet(`<h2>Alasan batal</h2><div class="g">${["Salah parcel","Salah nominal","Salah tanggal"].map(a=>`<button class="b bad" data-a="${a}">${a}</button>`).join("")}</div>`);
+  s2.querySelectorAll("[data-a]").forEach(e=>e.onclick=()=>{let oo=db.orders.find(x=>x.id==n.order);if(roHP())return alert("HP cadangan hanya baca.");if(!confirm("Yakin batalkan "+n.no+" ("+e.dataset.a+")?"+(oo&&oo.pays.length==1&&n.pays.length==1?infoBatal(oo):"")))return;n.batal=e.dataset.a;n.log={oleh:role,waktu:iso(0)+" "+new Date().toTimeString().slice(0,5)};db.menunggu=n.no;let o=db.orders.find(x=>x.id==n.order);if(o&&o.pays.length>1&&n.pays.length==o.pays.length){let pp=o.pays.pop();if(pp.jenis=="refund")o.total-=pp.amt;lg("Batal "+n.no+" ("+e.dataset.a+")")}else if(o&&o.pays.length==1&&n.pays.length==1){stokKembali(o).forEach(([id,q])=>{let b=db.barang.find(x=>x.id==id);if(b){b.stok=(b.stok||0)+q;ml(b,q,"Batal nota "+n.no)}});lg("Batal "+n.no+" ("+e.dataset.a+"), pesanan dihapus");db.orders=db.orders.filter(x=>x!=o)}
+   db.dirty++;save();closeAll();draw();alert("Nota dibatalkan. Buat transaksi baru di tab Jual; sebutkan 'Pengganti "+n.no+"' ke pembeli.")})}
+}
+/* ---------- rekap ---------- */
+let per="all";
+function belum(){
+ let bl=db.orders.filter(o=>o.total-paid(o)>0),sum=bl.reduce((s,o)=>s+o.total-paid(o),0);
+ return `<h2>Belum lunas (semua periode)</h2><div class="c">${bl.length?bl.map(o=>{let pb=db.pembeli.find(x=>x.id==o.pembeli),d=o.pays[0];return `<div class="row" style="border-bottom:1px solid var(--ln);padding:8px 0"><span><b>${H(pb?pb.nama:"?")}</b><br><span class="m">${o.items.map(i=>H(i.nama)+" x"+i.q).join(", ")}<br>Total ${rp(o.total)} | DP ${rp(d.amt)} tgl ${tgl(d.date)}</span></span><span style="text-align:right"><b>${rp(o.total-paid(o))}</b><br>${roHP()?"":`<button class="b" style="margin-top:4px" onclick="lunasi('${o.id}')">Lunasi</button>`}</span></div>`}).join("")+`<div class="row" style="padding-top:8px"><b>Total sisa belum dibayar</b><b>${rp(sum)}</b></div>`:'<div class="m">Semua sudah lunas.</div>'}</div>`;
+}
+const inP=d=>per=="all"||(per=="h"&&d==iso(0))||(per=="w"&&d>=iso(6))||(per=="m"&&d.slice(0,7)==iso(0).slice(0,7))||(per=="b"&&d.slice(0,7)==rk.bln)||(per=="r"&&d>=rk.from&&d<=rk.to);
+let rk={bln:"",from:"",to:""};const ro={},RD={ring:1,keu:1,jdw:1,beli:1,sip:1,unt:0,par:0,kas:0,pem:0};
+const plabel=()=>({h:"Hari ini",w:"7 hari terakhir",m:"Bulan ini",all:"Semua periode",b:"Bulan "+rk.bln,r:tgl(rk.from)+" s/d "+tgl(rk.to)}[per]);
+function pBln(){openForm("Pilih bulan",[{l:"Format YYYY-MM",t:"text",v:iso(0).slice(0,7)}],v=>{if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(v[0])){alert("Format bulan: YYYY-MM");return false}rk.bln=v[0];per="b";draw()})}
+function pRng(){openForm("Rentang tanggal",[{l:"Dari (YYYY-MM-DD)",t:"text",v:iso(6)},{l:"Sampai (YYYY-MM-DD)",t:"text",v:iso(0)}],v=>{if(!validTgl(v[0])||!validTgl(v[1])||v[0]>v[1]){alert("Tanggal tidak valid atau urutannya terbalik");return false}rk.from=v[0];rk.to=v[1];per="r";draw()})}
+const dt=(k,t,b)=>`<details ${(ro[k]==null?RD[k]:ro[k])?"open":""} ontoggle="ro.${k}=this.open"><summary>${t}</summary>${b}</details>`;
+const mg=d=>d.om?(Math.round((d.om-d.md)/d.om*1000)/10).toString().replace(".",",")+"%":"-";
+function rkData(){
+ let L=db.orders.filter(o=>inP(o.pays[0].date)),ong=0,om=0,md=0,rc=0,pp={},cash={},kel={};
+ L.forEach(o=>{om+=o.total-(o.ongkir||0);ong+=o.ongkir||0;let tl=o.items.reduce((s,i)=>s+i.harga*i.q,0)||1;o.items.forEach(i=>{let k=i.pid||i.nama,x=pp[k]=pp[k]||{n:i.nama,q:0,om:0,md:0};x.q+=i.q;x.om+=i.harga*i.q/tl*(o.total-(o.ongkir||0));x.md+=i.modal*i.q;md+=i.modal*i.q})});
+ db.orders.forEach(o=>o.pays.forEach(p=>{if(inP(p.date)){rc+=p.amt;cash[p.date]=(cash[p.date]||0)+p.amt}}));
+ let bl=db.belanja.filter(x=>inP(x.tgl));bl.forEach(x=>kel[x.tgl]=(kel[x.tgl]||0)+x.biaya);
+ return{L,ong,om,md,rc,pp,cash,kel,bel:bl.reduce((s,x)=>s+x.biaya,0),nbl:bl.length,sisa:L.reduce((s,o)=>s+o.total-paid(o),0)}}
+function jdwal(){let P=db.orders.filter(o=>!o.diambil),A={},T=[];P.forEach(o=>o.ambil?(A[o.ambil]=A[o.ambil]||[]).push(o):T.push(o));
+ const row=o=>{let p=db.pembeli.find(x=>x.id==o.pembeli)||{nama:"?"},sq=o.total-paid(o);return `<div class="row m"><span>${H(p.nama)}: ${o.items.map(i=>H(i.nama)+" x"+i.q).join(", ")}</span><span>${sq>0?"sisa "+rp(sq):"lunas"}${sisaBuat(o)?" | belum dibuat "+sisaBuat(o):""}</span></div>`};
+ return Object.keys(A).sort().map(d=>{let h=hari(d);return `<div class="row"><b>${tgl(d)}</b><b style="color:${h<=0?"var(--bad)":"inherit"}">${h<0?"Lewat "+(-h)+" hari":h==0?"Hari ini":h==1?"Besok":h==2?"Lusa":h+" hari lagi"} (${A[d].length})</b></div>`+A[d].map(row).join("")}).join("")+(T.length?`<div class="row"><b>Tanpa tanggal</b><b>(${T.length})</b></div>`+T.map(row).join(""):"")||'<div class="m">Semua pesanan sudah diambil.</div>'}
+function siap(){let nd={},np={};db.orders.filter(o=>!o.diambil).forEach(o=>o.items.forEach(i=>{let r=i.q-(i.dibuat||0);if(r<=0)return;np[i.nama]=(np[i.nama]||0)+r;needB(i).forEach(c=>nd[c.b]=(nd[c.b]||0)+c.q*r)}));
+ return (Object.keys(np).length?'<div class="m">Parcel yang masih harus dibuat:</div>'+Object.entries(np).map(([n,q])=>`<div class="row"><span>${H(n)}</span><b>${q}</b></div>`).join("")+'<div class="m" style="margin-top:8px">Barang yang diambil dari rak:</div>'+Object.entries(nd).map(([id,q])=>{let b=db.barang.find(x=>x.id==id);return b?`<div class="row"><span>${H(b.nama)}</span><span><b>${q}</b> pcs</span></div>`:""}).join(""):'<div class="m">Semua pesanan sudah dibuat.</div>')+'<div class="m">Barang ini masih ada di rak, tetapi sudah terhitung terpakai di stok aplikasi.</div>'}
+const hb=b=>{let l=db.belanja.filter(x=>x.barang==b.nama).pop();return l&&l.pcs?l.biaya/l.pcs:(b.harga&&b.harga.length?Math.min(...b.harga.map(h=>lineModal(b,h))):modal(b))};
+function perluBeli(){let t=0,R=db.barang.filter(b=>stok(b.id)<batas(b.id)).map(b=>{let k=batas(b.id)-stok(b.id),ik=b.isi||1,kt=Math.ceil(k/ik),c=kt*ik*hb(b);t+=c;return `<div class="row"><span>${H(b.nama)}<br><span class="m">Stok ${stok(b.id)}, batas ${batas(b.id)}</span></span><span style="text-align:right"><b>${ik>1?kt+" "+(b.sat||"karton"):k+" pcs"}</b><br><span class="m">&asymp; ${rp(c)}</span></span></div>`}).join("");
+ return R?R+`<div class="row"><b>Estimasi biaya</b><b>${rp(t)}</b></div><div class="m">Dibeli sampai batas stok, dibulatkan ke karton, memakai harga belanja terakhir.</div>`:'<div class="m">Semua stok masih di atas batas.</div>'}
+function dlCsv(R,fn){let c=x=>{x=String(x==null?"":x);if(/^[=+\-@]/.test(x)&&isNaN(x))x="'"+x;return '"'+x.replace(/"/g,'""')+'"'},f=new Blob(["\ufeff"+R.map(r=>r.map(c).join(",")).join("\r\n")],{type:"text/csv"}),u=URL.createObjectURL(f),a=document.createElement("a");a.href=u;a.download=fn;document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(u)},3000)}
+function eksR(){let d=rkData(),R=[["Rekap",plabel()],[],["Jumlah transaksi",d.L.length],["Total penjualan",d.om],["Ongkos kirim diterima",d.ong],["Total modal",d.md],["Total keuntungan",d.om-d.md],["Margin",mg(d)],["Uang diterima",d.rc],["Sisa belum dibayar",d.sisa],["Belanja barang",d.bel],["Selisih kas",d.rc-d.bel],[],["Parcel","Jumlah","Omzet","Modal","Untung"]];
+ Object.values(d.pp).sort((a,b)=>b.om-b.md-(a.om-a.md)).forEach(x=>R.push([x.n,x.q,Math.round(x.om),x.md,Math.round(x.om-x.md)]));
+ R.push([],["Tanggal","Uang masuk","Belanja keluar"]);[...new Set([...Object.keys(d.cash),...Object.keys(d.kel)])].sort().forEach(t=>R.push([t,d.cash[t]||0,d.kel[t]||0]));
+ dlCsv(R,"rekap-"+({b:rk.bln,r:rk.from+"_"+rk.to}[per]||per)+".csv")}
+function cetakR(){let d=rkData(),a=role=="admin",r=(l,v,b)=>`<div class="row">${b?"<b>"+l+"</b><b>"+v+"</b>":"<span>"+l+"</span><span>"+v+"</span>"}</div>`;
+ let s=sheet(`<div class="nota"><div style="text-align:center"><b>${H(db.toko.nama||"")}</b><br>Rekap: ${H(plabel())}<br><small>Dicetak ${tgl(iso(0))}</small></div><hr>${r("Jumlah transaksi",d.L.length)}${r("Total penjualan",rp(d.om))}${d.ong?r("Ongkos kirim",rp(d.ong)):""}${a?r("Total modal",rp(d.md))+r("Total keuntungan",rp(d.om-d.md),1)+r("Margin",mg(d)):""}${r("Uang diterima",rp(d.rc))}${r("Sisa belum dibayar",rp(d.sisa))}${a?r("Belanja barang",rp(d.bel))+r("Selisih kas",rp(d.rc-d.bel),1):""}<hr><b>Parcel terjual</b>${Object.values(d.pp).sort((x,y)=>y.q-x.q).map(x=>r(H(x.n)+" x"+x.q,rp(x.om))).join("")||"<div>-</div>"}</div><div class="noprint" style="margin-top:10px"><button class="b pri" onclick="cetakNota(1)">Cetak / simpan PDF</button><button class="b" id="tp" style="width:100%;margin-top:8px">Tutup</button></div>`);
+ s.querySelector("#tp").onclick=()=>s.remove()}
+function vRkp(){
+ let d=rkData(),a=role=="admin",R=(l,v,b)=>`<div class="row">${b?"<b>"+l+"</b><b>"+v+"</b>":"<span>"+l+"</span><span>"+v+"</span>"}</div>`,
+ P=[["h","Hari ini"],["w","7 hari"],["m","Bulan ini"],["all","Semua"]],nb={},ds=[...new Set([...Object.keys(d.cash),...Object.keys(d.kel)])].sort().reverse(),PP=Object.values(d.pp);
+ Object.entries(d.pp).forEach(([k,x])=>{let p=db.parcel.find(y=>y.id==k||y.nama==k);if(p)p.isi.forEach(i=>nb[i.b]=(nb[i.b]||0)+i.q*x.q)});
+ let tj=db.parcel.filter(p=>!p.nonaktif&&!d.pp[p.id]&&!d.pp[p.nama]).map(p=>H(p.nama));
+ return peringatan()+`<div class="g">${P.map(([k,l])=>`<button class="b ${per==k?"on":""}" onclick="per='${k}';draw()">${l}</button>`).join("")}<button class="b ${per=="b"?"on":""}" onclick="pBln()">Pilih bulan</button><button class="b ${per=="r"?"on":""}" onclick="pRng()">Rentang tanggal</button></div><div class="m" style="margin:8px 0">Periode: <b>${H(plabel())}</b></div><div class="g">${a?`<button class="b" onclick="eksR()">Ekspor CSV</button>`:""}<button class="b" onclick="cetakR()">Cetak ringkasan</button></div>`+
+ dt("ring","Ringkasan",`<div class="c">${R("Jumlah transaksi",d.L.length)}${R("Total penjualan",rp(d.om))}${d.ong?R("Ongkos kirim diterima",rp(d.ong)):""}${a?R("Total modal",rp(d.md))+R("Total keuntungan",rp(d.om-d.md),1)+R("Margin keuntungan",mg(d)):""}${(db.pref||{}).rata?R("Rata-rata per transaksi",rp(d.L.length?d.om/d.L.length:0)):""}${R("Uang diterima di periode ini",rp(d.rc))}${R("Sisa belum dibayar (penjualan periode ini)",rp(d.sisa))}<div class="m" style="margin-top:6px">Ongkos kirim tidak dihitung sebagai penjualan maupun keuntungan. Transaksi dihitung menurut tanggal pembayaran pertama (DP). Uang diterima dihitung menurut tanggal tiap pembayaran, jadi bisa berbeda dari penjualan.</div></div>`)+
+ (a?dt("keu","Keuangan kas",`<div class="c">${R("Uang diterima",rp(d.rc))}${R("Belanja barang ("+d.nbl+"x)",rp(d.bel))}${R("Selisih kas",rp(d.rc-d.bel),1)}<div class="m" style="margin-top:6px">Selisih kas = uang masuk dikurangi belanja barang. Keuntungan di atas dihitung dari modal rata-rata, bukan dari kas.</div></div>`):"")+
+ dt("jdw","Jadwal pengambilan",`<div class="c">${jdwal()}</div>`)+dt("beli","Perlu dibeli",`<div class="c">${perluBeli()}</div>`)+dt("sip","Perlu dibuat (belum dikemas)",`<div class="c">${siap()}</div>`)+
+ belum()+notaRk()+
+ (a?dt("unt","Untung per parcel",`<div class="c">${PP.length?PP.sort((x,y)=>y.om-y.md-(x.om-x.md)).map(x=>`<div class="row"><span>${H(x.n)} x${x.q}<br><span class="m">Omzet ${rp(x.om)}</span></span><span style="text-align:right"><b>${rp(x.om-x.md)}</b><br><span class="m">${x.om?Math.round((x.om-x.md)/x.om*100):0}%</span></span></div>`).join(""):'<div class="m">Belum ada penjualan di periode ini.</div>'}</div>`):"")+
+ dt("par","Parcel terjual",`<div class="c">${PP.length?PP.sort((x,y)=>y.q-x.q).map(x=>`<div class="row"><span>${H(x.n)}</span><span><b>${x.q}</b> | ${rp(x.om)}</span></div>`).join(""):'<div class="m">Belum ada penjualan di periode ini.</div>'}${tj.length?`<div class="m" style="margin-top:8px">Tidak terjual di periode ini: ${tj.join(", ")}</div>`:""}</div>`)+
+ dt("kas","Kas harian",`<div class="c">${ds.slice(0,60).map(t=>`<div class="row"><span>${tgl(t)}</span><span><b>+${rp(d.cash[t]||0)}</b>${a&&d.kel[t]?" / -"+rp(d.kel[t]):""}</span></div>`).join("")||'<div class="m">Belum ada transaksi kas.</div>'}${ds.length>60?'<div class="m">Menampilkan 60 hari terbaru.</div>':""}</div>`)+
+ dt("pem","Pemakaian barang periode ini",`<div class="c">${Object.keys(nb).length?Object.entries(nb).map(([id,q])=>{let b=db.barang.find(x=>x.id==id);return b?`<div class="row"><span>${H(b.nama)}</span><span><b>${q}</b> satuan, ${Math.ceil(q/(b.isi||1))} karton</span></div>`:""}).join(""):'<div class="m">Belum ada data.</div>'}<div class="m">Dihitung dari isi parcel di master saat ini.</div></div>`);
+}
+/* ---------- ubah & hapus master ---------- */
+const sama=(n,lst,exceptId)=>lst.some(x=>x.id!=exceptId&&x.nama.toUpperCase().trim()==n);
+function ubahPembeli(id){let p=db.pembeli.find(x=>x.id==id);
+ openForm("Ubah pembeli",pbF(p),v=>{if(!cekPb(v,id))return false;let g=p.nama!=v[0];Object.assign(p,{nama:v[0],hp:v[1],alamat:v[2],cat:v[3]});chg();if(g)alert("Nama diubah. Nota lama tetap memakai nama saat nota diterbitkan.")})}
+function arsipPb(id){let p=db.pembeli.find(x=>x.id==id);p.arsip=p.arsip?0:1;if(p.arsip&&tx&&tx.p==id)tx.p=null;chg()}
+function hapusPembeli(id){let p=db.pembeli.find(x=>x.id==id);
+ if(db.orders.some(o=>o.pembeli==id))return alert("Tidak bisa dihapus: "+p.nama+" sudah punya transaksi.");
+ if(!confirm("Hapus pembeli "+p.nama+"?"))return;
+ db.pembeli=db.pembeli.filter(x=>x.id!=id);if(tx&&tx.p==id)tx.p=null;chg()}
+function ubahSupplier(id){let x=db.supplier.find(y=>y.id==id);
+ openForm("Ubah supplier",[{l:"Nama supplier (otomatis huruf besar)",t:"text",v:x.nama,up:true}],v=>{
+  if(!v[0])return false;if(sama(v[0],db.supplier,id)){alert("Supplier itu sudah ada.");return false}
+  x.nama=v[0];chg();alert("Nama diubah. Riwayat belanja lama tetap memakai nama lama.")})}
+function hapusSupplier(id){let x=db.supplier.find(y=>y.id==id);
+ let dipakai=db.barang.filter(b=>(b.harga||[]).some(h=>h.sup==id));
+ if(dipakai.length)return alert("Tidak bisa dihapus: "+x.nama+" dipakai di harga beli "+dipakai.map(b=>b.nama).join(", ")+". Hapus baris harga itu dulu.");
+ if(db.belanja.some(b=>b.sup==x.nama))return alert("Tidak bisa dihapus: "+x.nama+" sudah punya riwayat belanja.");
+ if(!confirm("Hapus supplier "+x.nama+"?"))return;db.supplier=db.supplier.filter(y=>y.id!=id);chg()}
+function hapusBarang(id){let b=db.barang.find(x=>x.id==id);
+ let dalam=db.parcel.filter(p=>p.isi.some(i=>i.b==id));
+ if(dalam.length)return alert("Tidak bisa dihapus: "+b.nama+" dipakai di parcel "+dalam.map(p=>p.nama).join(", ")+". Keluarkan dulu dari isi parcel itu.");
+ if(db.orders.some(o=>o.use&&o.use[id]))return alert("Tidak bisa dihapus: "+b.nama+" sudah dipakai di transaksi.");
+ if(db.belanja.some(x=>x.barang==b.nama))return alert("Tidak bisa dihapus: "+b.nama+" sudah punya riwayat belanja.");
+ if(!confirm("Hapus barang "+b.nama+"?"))return;db.barang=db.barang.filter(x=>x.id!=id);chg()}
+function hapusParcel(id){let p=db.parcel.find(x=>x.id==id);
+ if(db.orders.some(o=>o.items.some(i=>i.pid==id||(!i.pid&&i.nama==p.nama))))return alert("Tidak bisa dihapus: "+p.nama+" sudah dipakai di transaksi.");
+ if(!confirm("Hapus parcel "+p.nama+"?"))return;
+ db.parcel=db.parcel.filter(x=>x.id!=id);if(tx&&tx.q)delete tx.q[id];chg()}
+/* ---------- data contoh ---------- */
+function muatMaster(){
+ if((db.barang.length||db.orders.length)&&!confirm("Semua data yang ada di HP ini akan diganti data contoh. Lanjutkan?"))return;
+ const B=[["b1","Sirup Marjan Melon",84000,12,36,12],["b2","Sirup Marjan Jeruk",84000,12,36,12],["b3","Sirup Marjan Cocopandan",84000,12,24,12],["b4","Susu Cap Enak",144000,48,96,20],["b5","Minyak Goreng 1 L",180000,12,24,6],["b6","Minyak Goreng 2 L",360000,12,24,6],["b7","Gula Pasir 1 kg",300000,20,40,10],["b8","Gula Pasir 1/2 kg",160000,20,40,10],["b9","Teh Celup 25 sachet",144000,24,48,10],["b10","Wafer Roll Kaleng",240000,12,12,4]];
+ const P=[["p1","PAKET RAMADHAN 1",[["b1",2],["b4",2]],1000,25000],["p2","PAKET RAMADHAN 2",[["b2",1],["b4",1]],1000,15000],["p3","PAKET RAMADHAN 3",[["b1",1],["b4",1]],1000,15000],["p4","PAKET RAMADHAN 4",[["b1",1],["b2",1]],1000,20000],["p5","PARCEL 1",[["b6",1],["b7",1],["b3",1]],8000,75000],["p6","PARCEL 2",[["b5",1],["b7",1],["b3",1]],8000,60000],["p7","PARCEL 3",[["b6",1],["b8",1],["b3",1]],8000,68000],["p8","PARCEL HEMAT",[["b9",1],["b10",1],["b8",1]],5000,50000]];
+ let ath=db.auth,lgs=db.log;db=kosong();db.auth=ath;db.log=lgs;lg("Muat data contoh");db.toko={nama:"Toko Parcel Contoh",hp:"0812-0000-0000"};
+ db.supplier=[{id:"s1",nama:"TOKO A"},{id:"s2",nama:"TOKO B"}];
+ db.barang=B.map(([id,nama,beli,isi,stok,min])=>({id,nama,beli,isi,stok,min,harga:[{id:"h_"+id,sup:"s1",jenis:"karton",harga:beli}]}));
+ db.barang[0].harga=[{id:"h1",sup:"s1",jenis:"pcs",harga:7000},{id:"h2",sup:"s1",jenis:"karton",harga:84000},{id:"h3",sup:"s2",jenis:"pcs",harga:7000},{id:"h4",sup:"s2",jenis:"karton",harga:80000}];
+ db.parcel=P.map(([id,nama,isi,kemasan,harga])=>({id,nama,isi:isi.map(([b,q])=>({b,q})),kemasan,harga}));
+ db.pembeli=["Ibu Ani","Bapak Budi","Ibu Citra","Bapak Dedi","Ibu Eka"].map((nama,i)=>({id:"u"+(i+1),nama}));
+ db.dirty=1;save();go("mst");
+}
+function mkOrder(pb,q,jenis,amt,met,date){
+ let items=db.parcel.filter(p=>q[p.id]).map(p=>({pid:p.id,nama:p.nama,q:q[p.id],harga:p.harga,modal:Math.round(modalParcel(p)),isi:p.isi.map(i=>({n:(db.barang.find(x=>x.id==i.b)||{}).nama||"?",q:i.q,b:i.b}))}));
+ let tot=items.reduce((s,i)=>s+i.q*i.harga,0),use=pakai(q);
+ Object.entries(use).forEach(([id,n])=>{let b=db.barang.find(x=>x.id==id);b.stok=(b.stok||0)-n});
+ let o={id:uid(),pembeli:pb,items,total:tot,pays:[{jenis,amt:jenis=="lunas"?tot:amt,date,met}],use};
+ db.orders.push(o);terbit(o);return o;
+}
+function muatTrx(){
+ if(!db.pembeli.some(x=>x.id=="u1")||!db.parcel.some(x=>x.id=="p1"))return alert("Muat data master contoh dulu.");
+ let uq=pakai({p1:4,p4:2,p5:1,p6:2,p2:3}),kk=Object.entries(uq).filter(([id,q])=>stok(id)<q);
+ if(kk.length)return alert("Stok tidak cukup untuk transaksi contoh: "+kk.map(([id,q])=>nmB(id)+" butuh "+q+", stok "+stok(id)).join("; "));
+ mkOrder("u1",{p1:4,p4:2},"dp",80000,"Transfer",iso(2));
+ mkOrder("u2",{p5:1},"lunas",0,"Tunai",iso(1));
+ mkOrder("u3",{p6:2},"dp",70000,"Tunai",iso(0));
+ let o=mkOrder("u4",{p2:3},"dp",30000,"Tunai",iso(3));o.pays.push({jenis:"lunas",amt:o.total-30000,date:iso(1),met:"Transfer"});terbit(o);
+ chg();go("nota");
+}
+function hapusSemua(){if(!confirm("HAPUS SEMUA data (barang, parcel, pembeli, transaksi, nota)? Pastikan sudah dicadangkan."))return;if(!confirm("Yakin? Ini tidak bisa dibatalkan."))return;let ath=db.auth,lgs=db.log;db=kosong();db.auth=ath;db.log=lgs;lg("Hapus semua data");save();go("mst")}
+/* ---------- cadangan ---------- */
+function vBak(){
+ return versiCard()+`<div class="c"><div class="row"><b>Terakhir dicadangkan</b><span>${db.last||"Belum pernah"}</span></div><div class="row"><span>Belum dicadangkan</span><b>${db.dirty}</b></div><button class="b pri" onclick="kirim()">Kirim cadangan ke HP kedua</button></div><div class="c"><b>Peran HP ini: ${roHP()?"CADANGAN (baca saja)":"UTAMA"}</b><div class="m">Hanya satu HP yang boleh menjadi HP utama. HP cadangan tidak bisa mencatat transaksi, sehingga nomor nota tidak bentrok.</div><button class="b" style="margin-top:6px" onclick="setDev('${roHP()?"utama":"cadangan"}')">${roHP()?"Jadikan HP utama":"Jadikan HP cadangan (baca saja)"}</button>${roHP()?"":`<button class="b pri" style="margin-top:6px" onclick="kirim(true)">Serahkan peran utama ke HP lain</button>`}<button class="b" style="margin-top:6px" onclick="eNamaHP()">Nama HP ini: ${H(namaHP())}</button>${roHP()?"":`<button class="b" style="margin-top:6px" onclick="ubahPJ()">Ubah penanggung jawab${gil().pj?": "+H(gil().pj):""}</button>`}</div><div class="c"><b>Aturan kerja serah terima</b><div class="m">1. Satu penanggung jawab per hari; hanya HP utama yang mencatat.<br>2. Serah terima saat toko tutup atau jeda sepi.<br>3. Selama serah terima, catat transaksi di buku dulu, input belakangan.<br>4. Pastikan HP lama sudah tertulis "HP CADANGAN" di bagian atas layar.<br>5. Jangan memulihkan file lama ke HP utama.</div></div><div class="c"><b>Pulihkan dari cadangan</b><div class="m">Hanya di HP kedua saat HP utama rusak. Data di HP ini akan diganti.</div><input type="file" id="fi" accept=".json" onchange="pulih(this)"></div><div class="c"><b>Data contoh</b><div class="m">10 barang, 8 parcel (termasuk 4 PAKET RAMADHAN), 5 pembeli, dan 4 transaksi untuk latihan. Harga dan stok hanyalah contoh; ganti dengan harga Anda.</div><div class="g" style="margin-top:8px"><button class="b" onclick="muatMaster()">Muat data master contoh</button><button class="b" onclick="muatTrx()">Tambah 4 transaksi contoh</button><button class="b bad" onclick="hapusSemua()">Hapus semua data</button></div></div><div class="c"><b>Keamanan</b><div class="m">Admin: semua menu. User: hanya Jual, Pembeli, dan Nota (tanpa modal, untung, master, rekap, dan pembatalan). Aplikasi terkunci otomatis setelah 3 menit tidak disentuh.</div><div class="g" style="margin-top:8px"><button class="b" onclick="ubahPin('admin')">Ubah PIN admin</button><button class="b" onclick="buatKode()">Buat kode pemulihan PIN</button><button class="b" onclick="ubahPin('user')">${db.auth&&db.auth.user?"Ubah":"Buat"} PIN user</button>${db.auth&&db.auth.user?`<button class="b bad" onclick="hapusPinUser()">Hapus PIN user</button>`:""}<button class="b" onclick="kunciSekarang()">Kunci sekarang</button></div></div>`+logHtml();
+}
+function tandai(){db.dirty=0;db.last=iso(0)+" "+new Date().toTimeString().slice(0,5);save();closeAll();draw()}
+function berkas(){return new File([JSON.stringify(db)],"cadangan-parcel-"+iso(0)+".json",{type:"application/json"})}
+async function kirim(serah){
+ let gB=null,pjB="";
+ if(serah){
+  if(roHP())return alert("HP ini sudah menjadi HP cadangan.");
+  if(!confirm("SERAH TERIMA PERAN UTAMA\n\nHP ini akan langsung menjadi HP CADANGAN (baca saja) setelah file dibuat, supaya tidak ada dua HP utama. Sebaiknya dilakukan saat toko tutup atau jeda sepi. Siapkan buku catatan untuk transaksi yang terjadi selama serah terima. Lanjutkan?"))return;
+  pjB=await askTxt("Penanggung jawab berikutnya","Nama penanggung jawab yang memegang HP utama berikutnya (wajib)");
+ }
+ let pw=await askPw("Password cadangan","Password untuk mengunci file (minimal 6 karakter). Kosongkan = TANPA password (tidak disarankan: file berisi semua data). Catat password ini, file tidak bisa dibuka tanpanya.");
+ if(pw&&pw.length<6)return alert("Password minimal 6 karakter.");
+ if(serah)gB={no:(gil().no||0)+1,pj:pjB,nama:namaHP(),id:idHP(),waktu:iso(0)+" "+new Date().toTimeString().slice(0,5),serah:1};
+ let teks=JSON.stringify(serah?Object.assign({},db,{giliran:gB}):db);
+ if(pw){if(!(window.crypto&&crypto.subtle))return alert("Penguncian file tidak tersedia di cara membuka ini. Buka lewat Chrome atau kosongkan password.");try{teks=await enkrip(teks,pw)}catch(e){return alert("Gagal mengunci cadangan.")}}
+ else if(!confirm("Cadangan TANPA password berisi semua data dan kode PIN. Jangan kirim ke orang lain. Lanjutkan?"))return;
+ let f=new File([teks],"cadangan-parcel-"+iso(0)+"-v"+VERSI+(pw?"-terkunci":"")+".json",{type:"application/json"});
+ if(serah){db.giliran=Object.assign({},gB,{serah:0,diserahkan:1});lg("Serah terima ke "+pjB+" (giliran "+gB.no+")");try{localStorage.setItem("kasirParcel_perangkat","cadangan")}catch(e){}save();draw()}
+ try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:"Cadangan parcel"});tandai();return}}catch(e){if(e&&e.name=="AbortError"){if(serah)alert("File belum terkirim, tetapi HP ini sudah menjadi HP CADANGAN. Kirim ulang lewat Cadangan > Kirim cadangan, atau jadikan HP ini utama lagi kalau serah terima dibatalkan.");return}}
+ let s=sheet(`<h2>Kirim cadangan</h2><div class="m">Menu kirim langsung tidak tersedia di cara pembukaan ini. Simpan file dulu, lalu kirim lewat WhatsApp, Bluetooth, atau Quick Share dari folder Download.</div><br><button class="b pri" id="dl">1. Simpan file cadangan</button><button class="b" style="width:100%;margin-top:8px" id="tx">Atau tampilkan teks untuk disalin</button><button class="b" style="width:100%;margin-top:8px" id="ok">2. Sudah terkirim ke HP kedua</button>`);
+ s.querySelector("#dl").onclick=()=>{let u=URL.createObjectURL(f),a=document.createElement("a");a.href=u;a.download=f.name;document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(u)},3000)};
+ s.querySelector("#tx").onclick=()=>{s.firstChild.innerHTML='<h2>Salin semua teks ini</h2><div class="m">Tempel ke WhatsApp ke diri sendiri atau HP kedua. Di HP kedua, simpan sebagai file .json lalu pakai Pulihkan.</div><textarea id="ta" style="width:100%;height:160px" readonly></textarea><button class="b pri" id="cp">Salin</button><button class="b" style="width:100%;margin-top:8px" id="ok2">Sudah terkirim</button>';let t=s.querySelector("#ta");t.value=teks;s.querySelector("#cp").onclick=()=>{t.select();try{document.execCommand("copy")}catch(e){}};s.querySelector("#ok2").onclick=tandai};
+ s.querySelector("#ok").onclick=tandai;
+}
+function pulih(el){let r=new FileReader();r.onload=async()=>{let d;try{d=JSON.parse(r.result)}catch(e){return alert("File cadangan tidak valid. Data di HP ini tidak diubah.")}
+ if(d&&d.enc){let pw=await askPw("Password cadangan","Masukkan password file cadangan ini.");try{d=JSON.parse(await dekrip(d,pw))}catch(e){return alert("Password salah atau file rusak. Data di HP ini tidak diubah.")}}
+ try{
+ if(!d||typeof d!="object"||!d.toko||typeof d.toko!="object")throw 0;
+ if(["barang","parcel","pembeli","orders","notas"].some(k=>!Array.isArray(d[k])))throw 0;
+ if(!d.orders.every(o=>o&&Array.isArray(o.pays)&&o.pays.length&&Array.isArray(o.items)))throw 0;
+ if(!d.notas.every(n=>n&&Array.isArray(n.pays)&&Array.isArray(n.items)))throw 0;
+ if(!d.parcel.every(p=>p&&Array.isArray(p.isi)))throw 0}catch(e){return alert("File cadangan tidak valid. Data di HP ini tidak diubah.")}
+ let g0=(db.giliran||{}).no||0,g1=d.giliran?d.giliran.no:null;
+ if(g1==null){if(!confirm("File ini tidak punya penanda giliran (cadangan lama), jadi tidak bisa dicek apakah lebih tua dari data di HP ini. Lanjutkan?"))return}
+ else if(g1<g0)return alert("File ini LEBIH TUA dari data di HP ini (giliran "+g1+", sedangkan HP ini giliran "+g0+"). Pakai file terbaru dari HP utama. Data di HP ini tidak diubah.");
+ let ada=new Set(d.notas.map(n=>n.no)),eks=db.notas.filter(n=>!ada.has(n.no)).map(n=>n.no),tr=x=>x.length?x[x.length-1].no:"-";
+ if(!confirm((eks.length?"PERINGATAN: HP ini punya "+eks.length+" nota yang TIDAK ada di file ("+eks.slice(0,5).join(", ")+(eks.length>5?", ...":"")+"). Nota itu akan HILANG.\n\n":"")+"Nota terakhir di HP ini: "+tr(db.notas)+"\nNota terakhir di file: "+tr(d.notas)+"\n\nGanti semua data di HP ini dengan cadangan?"))return;
+ db=sanit(Object.assign(kosong(),d));if(db.giliran)db.giliran.diserahkan=0;db.dirty=0;role=null;lg("Pulihkan dari cadangan");save();draw();
+ if(d.giliran&&d.giliran.serah&&confirm("File ini adalah SERAH TERIMA dari "+(d.giliran.nama||"HP lain")+" (penanggung jawab: "+(d.giliran.pj||"-")+", giliran "+d.giliran.no+").\n\nJadikan HP ini HP UTAMA sekarang?")){db.giliran=Object.assign({},d.giliran,{serah:0,nama:namaHP(),id:idHP()});try{localStorage.setItem("kasirParcel_perangkat","utama")}catch(e){}lg("Terima peran utama dari "+(d.giliran.nama||"HP lain"));save();draw()}};if(el.files[0])r.readAsText(el.files[0])}
+{const o1=hapusPembeli;hapusPembeli=function(id){let n=db.pembeli.length,nm=(db.pembeli.find(x=>x.id==id)||{}).nama;o1(id);if(db.pembeli.length<n)lg("Hapus pembeli "+nm)}}
+{const o1=hapusSupplier;hapusSupplier=function(id){let n=db.supplier.length,nm=(db.supplier.find(x=>x.id==id)||{}).nama;o1(id);if(db.supplier.length<n)lg("Hapus supplier "+nm)}}
+{const o1=hapusBarang;hapusBarang=function(id){let n=db.barang.length,nm=(db.barang.find(x=>x.id==id)||{}).nama;o1(id);if(db.barang.length<n)lg("Hapus barang "+nm)}}
+{const o1=hapusParcel;hapusParcel=function(id){let n=db.parcel.length,nm=(db.parcel.find(x=>x.id==id)||{}).nama;o1(id);if(db.parcel.length<n)lg("Hapus parcel "+nm)}}
+draw();
+</script><script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, doc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDPSjxHOgJy7gFsO7G8nz2M7WT6zaESYZY",
+  authDomain: "penjualan-percel.firebaseapp.com",
+  projectId: "penjualan-percel",
+  storageBucket: "penjualan-percel.firebasestorage.app",
+  messagingSenderId: "472595221202",
+  appId: "1:472595221202:web:1bab153545a1600469bb0b"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const fbDb = getFirestore(fbApp);
+const rupiah = n => "Rp" + Math.round(n || 0).toLocaleString("id-ID");
+
+window.kirimNotaKeFirebase = async (o, pembeliNama) => {
+  const bersih = JSON.parse(JSON.stringify({ ...o, pembeliNama, dibuatPada: new Date().toISOString() }));
+  await setDoc(doc(fbDb, "nota", o.id), bersih);
+};
+
+// Tombol kecil di pojok kanan atas
+const tombol = document.createElement("button");
+tombol.textContent = "Firebase";
+tombol.style.cssText = "position:fixed;top:6px;right:6px;z-index:50;font-size:12px;padding:4px 10px;border-radius:8px;border:1px solid #888;background:#fff;color:#111;opacity:.9";
+tombol.onclick = bukaPanel;
+document.body.appendChild(tombol);
+
+function bukaPanel() {
+  let wrap = document.getElementById("fbpanel");
+  if (wrap) wrap.remove();
+  wrap = document.createElement("div");
+  wrap.id = "fbpanel";
+  wrap.style.cssText = "position:fixed;inset:0;background:#000a;z-index:60;display:flex;align-items:flex-end;justify-content:center";
+  wrap.innerHTML = `<div style="background:#fff;color:#111;width:100%;max-width:560px;max-height:90%;overflow:auto;border-radius:14px 14px 0 0;padding:16px;font:15px system-ui,sans-serif">
+    <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:18px">Firebase</b><button id="fbtutup" style="padding:6px 12px">Tutup</button></div>
+    <p>Nota di HP ini: <b>${db.orders.length}</b></p>
+    <button id="fbsemua" style="padding:10px;width:100%;margin:6px 0">Kirim semua nota lama ke Firebase</button>
+    <button id="fbrekap" style="padding:10px;width:100%;margin:6px 0">Lihat rekap dari Firebase</button>
+    <div id="fbout" style="margin-top:10px"></div></div>`;
+  document.body.appendChild(wrap);
+  document.getElementById("fbtutup").onclick = () => wrap.remove();
+  const out = document.getElementById("fbout");
+
+  document.getElementById("fbsemua").onclick = async () => {
+    out.textContent = "Mengirim...";
+    let ok = 0, gagal = 0;
+    for (const o of db.orders) {
+      try {
+        const pb = db.pembeli.find(x => x.id == o.pembeli);
+        await window.kirimNotaKeFirebase(o, pb ? pb.nama : "");
+        ok++;
+      } catch (e) { gagal++; console.warn(e); }
+    }
+    out.textContent = "Terkirim: " + ok + ". Gagal: " + gagal + ".";
+  };
+
+  document.getElementById("fbrekap").onclick = async () => {
+    out.textContent = "Mengambil data...";
+    try {
+      const snap = await getDocs(collection(fbDb, "nota"));
+      let jumlah = 0, totalNota = 0, per = {};
+      snap.forEach(d => {
+        const x = d.data();
+        jumlah++;
+        totalNota += x.total || 0;
+        (x.pays || []).forEach(p => { const k = p.date || "-"; per[k] = (per[k] || 0) + (p.amt || 0); });
+      });
+      const baris = Object.keys(per).sort().map(k =>
+        `<div style="display:flex;justify-content:space-between;border-bottom:1px dotted #bbb;padding:4px 0"><span>${k}</span><span>${rupiah(per[k])}</span></div>`).join("");
+      out.innerHTML = `<p>Jumlah nota di Firebase: <b>${jumlah}</b><br>Total nilai nota: <b>${rupiah(totalNota)}</b></p><b>Pembayaran per tanggal</b>${baris || "<p>Belum ada data.</p>"}`;
+    } catch (e) { out.textContent = "Gagal mengambil data: " + e.message; }
+  };
+}
+</script>
+</body></html>
